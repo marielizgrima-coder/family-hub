@@ -103,6 +103,32 @@ function removeTag(el) {
 }
 
 /* ---------------------------------------------------------
+   UNIT CONVERSION
+--------------------------------------------------------- */
+
+function convertUnit(amount, from, to) {
+    const value = parseFloat(amount);
+    if (isNaN(value)) return amount;
+
+    const table = {
+        g: { kg: value / 1000 },
+        kg: { g: value * 1000 },
+
+        ml: { l: value / 1000 },
+        l: { ml: value * 1000 },
+
+        oz: { lb: value / 16 },
+        lb: { oz: value * 16 },
+
+        tsp: { tbsp: value / 3, cup: value / 48 },
+        tbsp: { tsp: value * 3, cup: value / 16 },
+        cup: { tbsp: value * 16, tsp: value * 48 }
+    };
+
+    return table[from]?.[to] ?? value;
+}
+
+/* ---------------------------------------------------------
    INGREDIENTS
 --------------------------------------------------------- */
 
@@ -114,12 +140,56 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 
     row.innerHTML = `
         <input type="text" class="ing-amount" placeholder="Amt" value="${amount}">
-        <input type="text" class="ing-unit" placeholder="Unit" value="${unit}">
+
+        <select class="ing-unit">
+            <option value="">Unit</option>
+            <option value="g">g</option>
+            <option value="kg">kg</option>
+            <option value="ml">ml</option>
+            <option value="l">l</option>
+            <option value="tsp">tsp</option>
+            <option value="tbsp">tbsp</option>
+            <option value="cup">cup</option>
+            <option value="oz">oz</option>
+            <option value="lb">lb</option>
+            <option value="piece">piece</option>
+            <option value="item">item</option>
+            <option value="clove">clove</option>      <!-- garlic -->
+            <option value="stick">stick</option>      <!-- celery, cinnamon -->
+            <option value="slice">slice</option>      <!-- bread, cheese -->
+            <option value="head">head</option>        <!-- lettuce, cabbage -->
+            <option value="bunch">bunch</option>      <!-- parsley, spinach -->
+            <option value="can">can</option>          <!-- canned goods -->
+            <option value="packet">packet</option>    <!-- noodles, spices -->
+        </select>
+
         <input type="text" class="ing-name" placeholder="Ingredient" value="${name}">
         <button class="delete-ingredient" onclick="this.parentElement.remove()">×</button>
     `;
 
     container.appendChild(row);
+
+    // Set initial unit if editing
+    if (unit) {
+        row.querySelector(".ing-unit").value = unit;
+    }
+
+    // Conversion logic
+    const unitSelect = row.querySelector(".ing-unit");
+    const amountInput = row.querySelector(".ing-amount");
+
+    let previousUnit = unit;
+
+    unitSelect.addEventListener("change", () => {
+        const newUnit = unitSelect.value;
+
+        if (previousUnit && newUnit && previousUnit !== newUnit) {
+            const newAmount = convertUnit(amountInput.value, previousUnit, newUnit);
+            amountInput.value = Math.round(newAmount * 100) / 100;
+        }
+
+        previousUnit = newUnit;
+    });
 }
 
 /* ---------------------------------------------------------
@@ -162,4 +232,3 @@ function saveRecipe() {
 
     window.location.href = "recipes.html";
 }
-
