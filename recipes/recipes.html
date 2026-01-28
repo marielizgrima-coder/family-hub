@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="recipes.css">
+</head>
+
+<body>
+
+    <!-- Sidebar Toggle -->
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="../index.html">Dashboard</a></li>
+            <li><a href="recipes.html">Recipes</a></li>
+            <li><a href="#">Meal Planner</a></li>
+            <li><a href="#">Shopping List</a></li>
+            <li><a href="#">Calendar</a></li>
+            <li><a href="../settings/settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Recipes</h1>
+            <button class="small-btn" onclick="window.location.href='edit-recipe.html'">+ Add Recipe</button>
+        </header>
+
+        <section id="recipesList" class="recipes-grid">
+            <!-- Recipe cards injected by JS -->
+        </section>
+
+    </main>
+
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/storage-service.js"></script>
+    <script src="recipes.js"></script>
+
+</body>
+</html>
 
