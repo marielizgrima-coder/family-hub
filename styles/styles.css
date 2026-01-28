@@ -57,8 +57,7 @@ body {
 }
 
 .sidebar ul li a:hover {
-    color: var(sage);
-}
+    color: sage;
 
 /* ---------------------------------------------------------
    SIDEBAR TOGGLE BUTTON
