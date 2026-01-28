@@ -239,7 +239,6 @@ function addIngredientRow(amount = "", unit = "", name = "") {
     // Add fraction picker
     addFractionPicker(row);
     updateFractionPicker(row);
-}
 
 /* ---------------------------------------------------------
    FRACTION PICKER
