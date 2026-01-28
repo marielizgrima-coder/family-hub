@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="recipes.css">
+</head>
+
+<body>
+
+    <!-- Sidebar Toggle -->
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="../index.html">Dashboard</a></li>
+            <li><a href="recipes.html">Recipes</a></li>
+            <li><a href="#">Meal Planner</a></li>
+            <li><a href="#">Shopping List</a></li>
+            <li><a href="#">Calendar</a></li>
+            <li><a href="../settings/settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="page-header">
+            <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
+            <h1 id="pageTitle">Add Recipe</h1>
+        </header>
+
+        <section class="dashboard-section">
+
+            <!-- RECIPE NAME -->
+            <div class="form-group">
+                <label for="recipeName">Recipe Name:</label>
+                <input type="text" id="recipeName" placeholder="Enter recipe name">
+            </div>
+
+            <!-- TAGS -->
+            <div class="form-group">
+                <label>Tags:</label>
+
+                <div class="tags-selection">
+                    <select id="existingTags" onchange="addExistingTag(this.value)">
+                        <option value="">Select from existing tags</option>
+                    </select>
+
+                    <div class="tag-container" id="tagContainer">
+                        <!-- Tag pills injected here -->
+                    </div>
+                </div>
+
+                <div class="add-tag-row">
+                    <input type="text" id="newTagInput" placeholder="Or type a new tag">
+                    <button class="small-btn" onclick="addNewTag()">+ Add New</button>
+                </div>
+            </div>
+
+            <!-- INGREDIENTS -->
+            <div class="form-group">
+                <label>Ingredients:</label>
+
+                <div id="ingredientsContainer">
+                    <!-- Ingredient rows injected here -->
+                </div>
+
+                <button class="small-btn" onclick="addIngredientRow()">+ Add Ingredient</button>
+            </div>
+
+            <!-- COOKING INFO -->
+            <div class="form-group cooking-info">
+                <div>
+                    <label for="cookingTime">Cooking Time:</label>
+                    <input type="text" id="cookingTime" placeholder="e.g. 45 min">
+                </div>
+
+                <div>
+                    <label for="ovenTemp">Oven Temp:</label>
+                    <input type="text" id="ovenTemp" placeholder="e.g. 180°C">
+                </div>
+
+                <div>
+                    <label for="servings">Servings:</label>
+                    <input type="number" id="servings" min="1" placeholder="e.g. 4">
+                </div>
+            </div>
+
+            <!-- INSTRUCTIONS -->
+            <div class="form-group">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" placeholder="Enter cooking instructions..."></textarea>
+            </div>
+
+            <!-- SAVE BUTTON -->
+            <button class="save-btn" onclick="saveRecipe()">Save Recipe</button>
+
+        </section>
+
+    </main>
+
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/storage-service.js"></script>
+    <script src="edit-recipe.js"></script>
+
+</body>
+</html>
 
