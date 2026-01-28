@@ -146,4 +146,11 @@ function filterRecipe(recipe) {
     return true;
 }
 
+// --------------------------------------------------------- // PAGE LOAD // ---------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    initFilters();
+    renderRecipes();
+});
+
+
 
