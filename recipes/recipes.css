@@ -89,20 +89,39 @@
     gap: 15px;
 }
 
-/* ---------------------------------------------------------
-   INGREDIENT ROWS
---------------------------------------------------------- */
-.page-edit-recipe .ingredient-row {
+.ingredient-row {
     display: grid;
     grid-template-columns: 80px 100px 1fr 40px;
     gap: 10px;
     margin-bottom: 10px;
+    align-items: center;
 }
 
+.ingredient-row input,
+.ingredient-row select {
+    width: 100%;
+}
+
+.delete-ingredient {
+    background: var(--danger);
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-ingredient:hover {
+    background: var(--danger-dark);
+}
+
+/* Mobile */
 @media (max-width: 700px) {
-    .page-edit-recipe .ingredient-row {
+    .ingredient-row {
         grid-template-columns: 1fr 1fr 1fr 40px;
     }
+}
+}
 }
 
 /* ---------------------------------------------------------
