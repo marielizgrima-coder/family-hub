@@ -37,6 +37,37 @@ function loadRecipeData(id) {
     // Ingredients
     (recipe.ingredients || []).forEach(ing => {
         addIngredientRow(ing.amount, ing.unit, ing.name);
+
+       row.innerHTML = `
+    <input type="number" class="ing-amount" placeholder="Amt" value="${amount}" step="0.01" min="0">
+
+    <select class="ing-unit">
+        <option value="">Unit</option>
+        <option value="g">g</option>
+        <option value="kg">kg</option>
+        <option value="ml">ml</option>
+        <option value="l">l</option>
+        <option value="tsp">tsp</option>
+        <option value="tbsp">tbsp</option>
+        <option value="cup">cup</option>
+        <option value="oz">oz</option>
+        <option value="lb">lb</option>
+        <option value="piece">piece</option>
+        <option value="item">item</option>
+        <option value="clove">clove</option>
+        <option value="stick">stick</option>
+        <option value="slice">slice</option>
+        <option value="head">head</option>
+        <option value="bunch">bunch</option>
+        <option value="can">can</option>
+        <option value="packet">packet</option>
+    </select>
+
+    <input type="text" class="ing-name" placeholder="Ingredient" value="${name}">
+
+    <button class="delete-ingredient" onclick="this.parentElement.remove()">×</button>
+`;
+
     });
 
     // Cooking info
