@@ -58,6 +58,31 @@ function loadRecipe() {
     document.getElementById("ovenTemp").textContent = recipe.ovenTemp || "—";
     document.getElementById("servings").textContent = recipe.servings || "—";
 
+   // Time formatting
+   function formatTime(minutes) {
+    const mins = parseInt(minutes, 10);
+    if (isNaN(mins) || mins <= 0) return "";
+
+    if (mins < 60) {
+        return `${mins} mins`;
+    }
+
+    const hours = Math.floor(mins / 60);
+    const remaining = mins % 60;
+
+    if (remaining === 0) {
+        return `${hours} hr`;
+    }
+
+    return `${hours} hr ${remaining} mins`;
+}
+
+// Temperature
+   function formatTemp(temp) {
+    if (!temp) return "";
+    return `${temp}°C`;
+}
+
     // Instructions
     document.getElementById("instructionsText").textContent =
         recipe.instructions || "No instructions provided.";
