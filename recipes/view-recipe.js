@@ -54,8 +54,8 @@ function loadRecipe() {
     });
 
     // Cooking info
-    document.getElementById("cookingTime").textContent = recipe.cookingTime || "—";
-    document.getElementById("ovenTemp").textContent = recipe.ovenTemp || "—";
+    document.getElementById("cookingTime").textContent = formatTime(recipe.cookingTime) || "—";
+    document.getElementById("ovenTemp").textContent = formatTemp(recipe.ovenTemp) || "—";
     document.getElementById("servings").textContent = recipe.servings || "—";
 
    // Time formatting
