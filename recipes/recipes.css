@@ -125,3 +125,33 @@
     color: white;
 }
 
+/* ---------------------------------------------------------
+   RESPONSIVE
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+    .ingredient-row {
+        grid-template-columns: 1fr 1fr 1fr 40px;
+    }
+}
+
+   .screen-awake-toggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.screen-awake-toggle.on {
+    background: #f6c344;
+    color: #222;
+}
+
