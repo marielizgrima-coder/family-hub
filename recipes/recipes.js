@@ -2,11 +2,7 @@
    LOAD ALL RECIPES + RENDER CARDS
 --------------------------------------------------------- */
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadRecipes();
-});
-
-function loadRecipes() {
+function renderRecipes() {
     const recipes = StorageService.getAllRecipes();
     const list = document.getElementById("recipesList");
 
@@ -18,19 +14,19 @@ function loadRecipes() {
     }
 
     recipes
-    .filter(filterRecipe)
-    .forEach(recipe => {
-        const card = document.createElement("div");
-        card.classList.add("recipe-card");
+        .filter(filterRecipe)
+        .forEach(recipe => {
+            const card = document.createElement("div");
+            card.classList.add("recipe-card");
 
-        card.innerHTML = `
-            <h3>${recipe.title}</h3>
-            <p class="recipe-tags">${renderTagList(recipe.tags)}</p>
-            <button class="small-btn" onclick="openRecipe('${recipe.id}')">View</button>
-        `;
+            card.innerHTML = `
+                <h3>${recipe.title}</h3>
+                <p class="recipe-tags">${renderTagList(recipe.tags)}</p>
+                <button class="small-btn" onclick="openRecipe('${recipe.id}')">View</button>
+            `;
 
-        list.appendChild(card);
-    });
+            list.appendChild(card);
+        });
 }
 
 function renderTagList(tags = []) {
@@ -146,14 +142,12 @@ function filterRecipe(recipe) {
     return true;
 }
 
-// --------------------------------------------------------- 
-// PAGE LOAD 
-// ---------------------------------------------------------
+
+/* ---------------------------------------------------------
+   PAGE LOAD
+--------------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
     initFilters();
     renderRecipes();
 });
-
-
-
