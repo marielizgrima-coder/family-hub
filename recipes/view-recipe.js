@@ -19,7 +19,7 @@ function loadRecipe() {
         return;
     }
 
-    const recipe = StorageService.getRecipe(recipeId);
+    const recipe = StorageService.getRecipe(id);
     if (!recipe) {
         alert("Recipe not found.");
         window.location.href = "recipes.html";
