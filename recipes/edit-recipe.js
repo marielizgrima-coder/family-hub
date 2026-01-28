@@ -222,8 +222,10 @@ function addIngredientRow(amount = "", unit = "", name = "") {
     const amountInput = row.querySelector(".ing-amount");
     let previousUnit = unit;
 
-    unitSelect.addEventListener("change", () => {
-        const newUnit = unitSelect.value;
+  unitSelect.addEventListener("change", () => {
+    const newUnit = unitSelect.value;   // inside the event listener
+    updateFractionPicker(row);          // update visibility
+});
 
         if (previousUnit && newUnit && previousUnit !== newUnit) {
             const newAmount = convertUnit(amountInput.value, previousUnit, newUnit);
