@@ -1,1 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Hub</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
 
+<body>
+
+    <!-- Sidebar Toggle -->
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="recipes/recipes.html">Recipes</a></li>
+            <li><a href="#">Meal Planner</a></li>
+            <li><a href="#">Shopping List</a></li>
+            <li><a href="#">Calendar</a></li>
+            <li><a href="settings/settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>Family Hub</h1>
+            <p id="currentDate"></p>
+        </header>
+
+        <section class="dashboard-section">
+            <h2>Today's Motivation</h2>
+            <p id="motivationText">You’ve got this, Marie. One step at a time.</p>
+        </section>
+
+        <section class="dashboard-section">
+            <h2>Weather</h2>
+            <p id="weatherInfo">Loading weather...</p>
+        </section>
+
+        <section class="dashboard-section">
+            <h2>Quick Links</h2>
+            <div class="quick-links">
+                <a class="quick-card" href="recipes/recipes.html">🍽 Recipes</a>
+                <a class="quick-card" href="#">🛒 Shopping List</a>
+                <a class="quick-card" href="#">📅 Calendar</a>
+                <a class="quick-card" href="#">🍼 Baby Milestones</a>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        // Date
+        const dateElem = document.getElementById("currentDate");
+        const today = new Date();
+        const options = { weekday: "long", day: "numeric", month: "short", year: "numeric" };
+        dateElem.textContent = today.toLocaleDateString("en-GB", options);
+
+        // Motivation (simple for now)
+        const motivations = [
+            "You’re doing amazing.",
+            "Small steps lead to big changes.",
+            "You’ve got this.",
+            "Progress, not perfection.",
+            "One thing at a time."
+        ];
+        document.getElementById("motivationText").textContent =
+            motivations[Math.floor(Math.random() * motivations.length)];
+
+        // Weather placeholder (real API later)
+        document.getElementById("weatherInfo").textContent = "Sunny • 17°C";
+    </script>
+
+</body>
+</html>
