@@ -37,37 +37,6 @@ function loadRecipeData(id) {
     // Ingredients
     (recipe.ingredients || []).forEach(ing => {
         addIngredientRow(ing.amount, ing.unit, ing.name);
-
-       row.innerHTML = `
-    <input type="number" class="ing-amount" placeholder="Amt" value="${amount}" step="0.01" min="0">
-
-    <select class="ing-unit">
-        <option value="">Unit</option>
-        <option value="g">g</option>
-        <option value="kg">kg</option>
-        <option value="ml">ml</option>
-        <option value="l">l</option>
-        <option value="tsp">tsp</option>
-        <option value="tbsp">tbsp</option>
-        <option value="cup">cup</option>
-        <option value="oz">oz</option>
-        <option value="lb">lb</option>
-        <option value="piece">piece</option>
-        <option value="item">item</option>
-        <option value="clove">clove</option>
-        <option value="stick">stick</option>
-        <option value="slice">slice</option>
-        <option value="head">head</option>
-        <option value="bunch">bunch</option>
-        <option value="can">can</option>
-        <option value="packet">packet</option>
-    </select>
-
-    <input type="text" class="ing-name" placeholder="Ingredient" value="${name}">
-
-    <button class="delete-ingredient" onclick="this.parentElement.remove()">×</button>
-`;
-
     });
 
     // Cooking info
@@ -155,27 +124,10 @@ function convertUnit(amount, from, to) {
 }
 
 /* ---------------------------------------------------------
-   INGREDIENT ROWS (your real system)
+   INGREDIENT ROWS
 --------------------------------------------------------- */
 
 const fractionUnits = ["cup", "tsp", "tbsp", "piece", "item", "whole"];
-
-const FRACTIONS_F3 = [
-    { label: "⅛", value: 0.125 },
-    { label: "¼", value: 0.25 },
-    { label: "⅓", value: 0.333 },
-    { label: "⅜", value: 0.375 },
-    { label: "½", value: 0.5 },
-    { label: "⅝", value: 0.625 },
-    { label: "⅔", value: 0.666 },
-    { label: "¾", value: 0.75 },
-    { label: "⅞", value: 0.875 },
-    { label: "1", value: 1 },
-    { label: "1 ¼", value: 1.25 },
-    { label: "1 ½", value: 1.5 },
-    { label: "1 ¾", value: 1.75 },
-    { label: "2", value: 2 }
-];
 
 function addIngredientRow(amount = "", unit = "", name = "") {
     const container = document.getElementById("ingredientsContainer");
@@ -217,15 +169,13 @@ function addIngredientRow(amount = "", unit = "", name = "") {
     // Set initial unit
     if (unit) row.querySelector(".ing-unit").value = unit;
 
-    // Unit conversion
+    // Unit conversion + fraction picker
     const unitSelect = row.querySelector(".ing-unit");
     const amountInput = row.querySelector(".ing-amount");
     let previousUnit = unit;
 
-  unitSelect.addEventListener("change", () => {
-    const newUnit = unitSelect.value;   // inside the event listener
-    updateFractionPicker(row);          // update visibility
-});
+    unitSelect.addEventListener("change", () => {
+        const newUnit = unitSelect.value;
 
         if (previousUnit && newUnit && previousUnit !== newUnit) {
             const newAmount = convertUnit(amountInput.value, previousUnit, newUnit);
@@ -234,20 +184,48 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 
         previousUnit = newUnit;
         updateFractionPicker(row);
-    };
+    });
 
-    // Add fraction picker
+    // Fraction picker
     addFractionPicker(row);
     updateFractionPicker(row);
+}
 
 /* ---------------------------------------------------------
    FRACTION PICKER
 --------------------------------------------------------- */
+function addFractionPicker(row) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("fraction-wrapper");
+    wrapper.style.display = "none";
+
+    const select = document.createElement("select");
+    select.classList.add("fraction-select");
+
+    [
+        { label: "¼", value: 0.25 },
+        { label: "½", value: 0.5 },
+        { label: "¾", value: 0.75 }
+    ].forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.value;
+        opt.textContent = f.label;
+        select.appendChild(opt);
+    });
+
+    select.addEventListener("change", () => {
+        const amountInput = row.querySelector(".ing-amount");
+        amountInput.value = select.value;
+    });
+
+    wrapper.appendChild(select);
+    row.appendChild(wrapper);
+}
+
 function updateFractionPicker(row) {
     const unit = row.querySelector(".ing-unit").value;
     const wrapper = row.querySelector(".fraction-wrapper");
 
-    // Show only when a unit is selected AND it's a fraction-friendly unit
     if (unit && fractionUnits.includes(unit)) {
         wrapper.style.display = "inline-flex";
     } else {
