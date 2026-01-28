@@ -232,3 +232,143 @@ function saveRecipe() {
 
     window.location.href = "recipes.html";
 }
+
+/* ---------------------------------------------------------
+   EDIT RECIPE – BASIC STRUCTURE
+   (adapt selectors to your existing HTML)
+--------------------------------------------------------- */
+
+const fractionUnits = ["cup", "tsp", "tbsp", "piece", "item", "whole"];
+
+const FRACTIONS_F3 = [
+    { label: "⅛", value: 0.125 },
+    { label: "¼", value: 0.25 },
+    { label: "⅓", value: 0.333 },
+    { label: "⅜", value: 0.375 },
+    { label: "½", value: 0.5 },
+    { label: "⅝", value: 0.625 },
+    { label: "⅔", value: 0.666 },
+    { label: "¾", value: 0.75 },
+    { label: "⅞", value: 0.875 },
+    { label: "1", value: 1 },
+    { label: "1 ¼", value: 1.25 },
+    { label: "1 ½", value: 1.5 },
+    { label: "1 ¾", value: 1.75 },
+    { label: "2", value: 2 }
+];
+
+/* ---------------------------------------------------------
+   INITIALISATION
+--------------------------------------------------------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+    initIngredientRows();
+    loadRecipeForEdit();   // if you already have this, keep your version
+});
+
+/* ---------------------------------------------------------
+   INGREDIENT ROW HANDLING
+--------------------------------------------------------- */
+
+function initIngredientRows() {
+    const rows = document.querySelectorAll(".ingredient-row");
+    rows.forEach(setupIngredientRow);
+}
+
+function setupIngredientRow(row) {
+    const amountInput = row.querySelector(".ingredient-amount");
+    const unitSelect = row.querySelector(".ingredient-unit");
+
+    if (!amountInput || !unitSelect) return;
+
+    // Ensure amount input is numeric with decimals
+    amountInput.type = "number";
+    amountInput.step = "0.01";
+    amountInput.min = "0";
+
+    // Create fraction picker button + select
+    let fractionWrapper = row.querySelector(".fraction-wrapper");
+    if (!fractionWrapper) {
+        fractionWrapper = document.createElement("div");
+        fractionWrapper.classList.add("fraction-wrapper");
+
+        const fractionButton = document.createElement("button");
+        fractionButton.type = "button";
+        fractionButton.classList.add("fraction-button");
+        fractionButton.textContent = "Pick fraction";
+
+        const fractionSelect = document.createElement("select");
+        fractionSelect.classList.add("fraction-select");
+        fractionSelect.innerHTML = `<option value="">Select…</option>` +
+            FRACTIONS_F3.map(f => `<option value="${f.value}">${f.label}</option>`).join("");
+
+        fractionWrapper.appendChild(fractionButton);
+        fractionWrapper.appendChild(fractionSelect);
+        amountInput.insertAdjacentElement("afterend", fractionWrapper);
+
+        // Button toggles visibility of the select (simple behaviour)
+        fractionButton.addEventListener("click", () => {
+            fractionSelect.classList.toggle("visible");
+        });
+
+        // When a fraction is chosen, set the numeric amount
+        fractionSelect.addEventListener("change", () => {
+            const val = parseFloat(fractionSelect.value);
+            if (!isNaN(val)) {
+                amountInput.value = val;
+            }
+        });
+    }
+
+    // Show/hide fraction picker based on unit
+    function updateFractionVisibility() {
+        const unit = unitSelect.value;
+        if (fractionUnits.includes(unit)) {
+            fractionWrapper.style.display = "inline-flex";
+        } else {
+            fractionWrapper.style.display = "none";
+        }
+    }
+
+    unitSelect.addEventListener("change", updateFractionVisibility);
+    updateFractionVisibility();
+}
+
+/* ---------------------------------------------------------
+   SAVE / LOAD RECIPE (SKELETON – MERGE WITH YOUR EXISTING LOGIC)
+--------------------------------------------------------- */
+
+function loadRecipeForEdit() {
+    // Your existing logic to load a recipe by ID and populate:
+    // - title
+    // - ingredients (amount, unit, name)
+    // After you create rows, call initIngredientRows() again if needed.
+}
+
+function collectRecipeData() {
+    const ingredients = [];
+    document.querySelectorAll(".ingredient-row").forEach(row => {
+        const amountInput = row.querySelector(".ingredient-amount");
+        const unitSelect = row.querySelector(".ingredient-unit");
+        const nameInput = row.querySelector(".ingredient-name");
+
+        if (!nameInput || !nameInput.value.trim()) return;
+
+        ingredients.push({
+            amount: amountInput.value ? parseFloat(amountInput.value) : null,
+            unit: unitSelect.value || "",
+            name: nameInput.value.trim()
+        });
+    });
+
+    // Return full recipe object (merge with your existing fields)
+    return {
+        // id, title, etc...
+        ingredients
+    };
+}
+
+function saveRecipe() {
+    const recipe = collectRecipeData();
+    // Your existing StorageService save logic here
+}
