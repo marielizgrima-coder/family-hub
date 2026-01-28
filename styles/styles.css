@@ -1,1 +1,275 @@
+/* ---------------------------------------------------------
+   RESET + BASE
+--------------------------------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    color: #333;
+    display: flex;
+}
+
+/* ---------------------------------------------------------
+   SIDEBAR
+--------------------------------------------------------- */
+
+.sidebar {
+    width: 240px;
+    background: #222;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    left: -240px;
+    top: 0;
+    padding: 20px;
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+.sidebar ul li a:hover {
+    color: #ffcc66;
+}
+
+/* ---------------------------------------------------------
+   SIDEBAR TOGGLE BUTTON
+--------------------------------------------------------- */
+
+.toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: #222;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    font-size: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.toggle-btn:hover {
+    background: #444;
+}
+
+/* ---------------------------------------------------------
+   MAIN CONTENT
+--------------------------------------------------------- */
+
+.main-content {
+    margin-left: 0;
+    padding: 20px;
+    width: 100%;
+    transition: 0.3s ease;
+}
+
+.sidebar.open ~ .main-content {
+    margin-left: 240px;
+}
+
+/* ---------------------------------------------------------
+   HEADERS
+--------------------------------------------------------- */
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.page-header p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* ---------------------------------------------------------
+   DASHBOARD SECTIONS
+--------------------------------------------------------- */
+
+.dashboard-section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.dashboard-section h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+/* ---------------------------------------------------------
+   QUICK LINKS
+--------------------------------------------------------- */
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.quick-card {
+    background: #ffe9c6;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.quick-card:hover {
+    background: #ffd89b;
+}
+
+/* ---------------------------------------------------------
+   FORMS (used later in recipes)
+--------------------------------------------------------- */
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ---------------------------------------------------------
+   SMALL BUTTONS
+--------------------------------------------------------- */
+
+.small-btn {
+    background: #ffcc66;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.small-btn:hover {
+    background: #ffb733;
+}
+
+/* ---------------------------------------------------------
+   SAVE BUTTON
+--------------------------------------------------------- */
+
+.save-btn {
+    background: #ff9900;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.save-btn:hover {
+    background: #e68a00;
+}
+
+/* ---------------------------------------------------------
+   TAGS (used in recipes)
+--------------------------------------------------------- */
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.tag-pill {
+    background: #ffcc66;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.remove-tag {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ---------------------------------------------------------
+   INGREDIENT ROWS
+--------------------------------------------------------- */
+
+.ingredient-row {
+    display: grid;
+    grid-template-columns: 80px 100px 1fr 40px;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.delete-ingredient {
+    background: #ff6666;
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-radius: 6px;
+}
+
+.delete-ingredient:hover {
+    background: #ff4d4d;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+    .ingredient-row {
+        grid-template-columns: 1fr 1fr 1fr 40px;
+    }
+}
 
