@@ -242,45 +242,16 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 /* ---------------------------------------------------------
    FRACTION PICKER
 --------------------------------------------------------- */
-function addFractionPicker(row) {
-    const amountInput = row.querySelector(".ing-amount");
-    const unitSelect = row.querySelector(".ing-unit");
-
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("fraction-wrapper");
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.classList.add("fraction-button");
-    btn.textContent = "Pick fraction";
-
-    const select = document.createElement("select");
-    select.classList.add("fraction-select");
-    select.innerHTML = `<option value="">Select…</option>` +
-        FRACTIONS_F3.map(f => `<option value="${f.value}">${f.label}</option>`).join("");
-
-    wrapper.appendChild(btn);
-    wrapper.appendChild(select);
-
-    amountInput.insertAdjacentElement("afterend", wrapper);
-
-    btn.addEventListener("click", () => {
-        select.classList.toggle("visible");
-    });
-
-    select.addEventListener("change", () => {
-        const val = parseFloat(select.value);
-        if (!isNaN(val)) amountInput.value = val;
-    });
-}
-
 function updateFractionPicker(row) {
     const unit = row.querySelector(".ing-unit").value;
     const wrapper = row.querySelector(".fraction-wrapper");
 
-    wrapper.style.display = fractionUnits.includes(unit)
-        ? "inline-flex"
-        : "none";
+    // Show only when a unit is selected AND it's a fraction-friendly unit
+    if (unit && fractionUnits.includes(unit)) {
+        wrapper.style.display = "inline-flex";
+    } else {
+        wrapper.style.display = "none";
+    }
 }
 
 /* ---------------------------------------------------------
