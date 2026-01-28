@@ -1,7 +1,20 @@
 /* ---------------------------------------------------------
+   COLOR SYSTEM — SAGE / OLIVE THEME
+--------------------------------------------------------- */
+:root {
+    --sage: #6B8F71;
+    --sage-light: #A3BFA8;
+    --sage-dark: #4E6E58;
+    --neutral: #C2C5AA;
+    --bg: #F6F7F2;
+    --text: #333;
+    --danger: #ff6666;
+    --danger-dark: #ff4d4d;
+}
+
+/* ---------------------------------------------------------
    RESET + BASE
 --------------------------------------------------------- */
-
 * {
     margin: 0;
     padding: 0;
@@ -10,18 +23,17 @@
 }
 
 body {
-    background: #f5f5f5;
-    color: #333;
+    background: var(--bg);
+    color: var(--text);
     display: flex;
 }
 
 /* ---------------------------------------------------------
    SIDEBAR
 --------------------------------------------------------- */
-
 .sidebar {
     width: 240px;
-    background: #222;
+    background: var(--sage-dark);
     color: white;
     height: 100vh;
     position: fixed;
@@ -57,17 +69,17 @@ body {
 }
 
 .sidebar ul li a:hover {
-    color: #ffcc66;
+    color: var(--sage-light);
+}
 
 /* ---------------------------------------------------------
    SIDEBAR TOGGLE BUTTON
 --------------------------------------------------------- */
-
 .toggle-btn {
     position: fixed;
     top: 15px;
     left: 15px;
-    background: #222;
+    background: var(--sage-dark);
     color: white;
     border: none;
     padding: 10px 14px;
@@ -78,13 +90,12 @@ body {
 }
 
 .toggle-btn:hover {
-    background: #444;
+    background: var(--sage);
 }
 
 /* ---------------------------------------------------------
    MAIN CONTENT
 --------------------------------------------------------- */
-
 .main-content {
     margin-left: 0;
     padding: 20px;
@@ -99,7 +110,6 @@ body {
 /* ---------------------------------------------------------
    HEADERS
 --------------------------------------------------------- */
-
 .page-header {
     margin-bottom: 25px;
 }
@@ -117,7 +127,6 @@ body {
 /* ---------------------------------------------------------
    DASHBOARD SECTIONS
 --------------------------------------------------------- */
-
 .dashboard-section {
     background: white;
     padding: 20px;
@@ -134,7 +143,6 @@ body {
 /* ---------------------------------------------------------
    QUICK LINKS
 --------------------------------------------------------- */
-
 .quick-links {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -142,25 +150,24 @@ body {
 }
 
 .quick-card {
-    background: #ffe9c6;
+    background: var(--neutral);
     padding: 20px;
     border-radius: 12px;
     text-align: center;
     font-size: 18px;
     text-decoration: none;
-    color: #333;
+    color: var(--text);
     font-weight: bold;
     transition: 0.2s;
 }
 
 .quick-card:hover {
-    background: #ffd89b;
+    background: var(--sage-light);
 }
 
 /* ---------------------------------------------------------
-   FORMS (used later in recipes)
+   FORMS
 --------------------------------------------------------- */
-
 input, select, textarea {
     width: 100%;
     padding: 10px;
@@ -180,11 +187,11 @@ button {
 }
 
 /* ---------------------------------------------------------
-   SMALL BUTTONS
+   BUTTONS
 --------------------------------------------------------- */
-
 .small-btn {
-    background: #ffcc66;
+    background: var(--sage);
+    color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 6px;
@@ -193,15 +200,11 @@ button {
 }
 
 .small-btn:hover {
-    background: #ffb733;
+    background: var(--sage-dark);
 }
 
-/* ---------------------------------------------------------
-   SAVE BUTTON
---------------------------------------------------------- */
-
 .save-btn {
-    background: #ff9900;
+    background: var(--sage-dark);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -211,13 +214,12 @@ button {
 }
 
 .save-btn:hover {
-    background: #e68a00;
+    background: var(--sage);
 }
 
 /* ---------------------------------------------------------
-   TAGS (used in recipes)
+   TAGS
 --------------------------------------------------------- */
-
 .tag-container {
     display: flex;
     flex-wrap: wrap;
@@ -226,7 +228,7 @@ button {
 }
 
 .tag-pill {
-    background: #ffcc66;
+    background: var(--sage-light);
     padding: 6px 12px;
     border-radius: 20px;
     display: flex;
@@ -240,18 +242,10 @@ button {
 }
 
 /* ---------------------------------------------------------
-   INGREDIENT ROWS
+   INGREDIENT DELETE BUTTON
 --------------------------------------------------------- */
-
-.ingredient-row {
-    display: grid;
-    grid-template-columns: 80px 100px 1fr 40px;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
 .delete-ingredient {
-    background: #ff6666;
+    background: var(--danger);
     border: none;
     color: white;
     font-size: 18px;
@@ -259,6 +253,5 @@ button {
 }
 
 .delete-ingredient:hover {
-    background: #ff4d4d;
+    background: var(--danger-dark);
 }
-
