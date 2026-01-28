@@ -1,73 +1,80 @@
 /* ---------------------------------------------------------
-   RECIPE GRID
+   PAGE NAMESPACES
 --------------------------------------------------------- */
+.page-recipes,
+.page-edit-recipe,
+.page-view-recipe {
+    --sage: #6B8F71;
+    --sage-light: #A3BFA8;
+    --sage-dark: #4E6E58;
+    --neutral: #C2C5AA;
+    --bg: #F6F7F2;
+    --text: #333;
+}
 
-.recipes-grid {
+/* ---------------------------------------------------------
+   RECIPE GRID (recipes.html)
+--------------------------------------------------------- */
+.page-recipes .recipes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
-.recipe-card {
+.page-recipes .recipe-card {
     background: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
-.recipe-card h3 {
+.page-recipes .recipe-card h3 {
     margin-bottom: 10px;
     font-size: 20px;
 }
 
-.recipe-tags {
+.page-recipes .recipe-tags {
     margin-bottom: 15px;
     font-size: 14px;
     color: #666;
 }
 
 /* ---------------------------------------------------------
-   INGREDIENT LIST (VIEW PAGE)
+   INGREDIENT LIST (view-recipe.html)
 --------------------------------------------------------- */
-
-.ingredients-view {
+.page-view-recipe .ingredients-view {
     list-style: none;
     padding-left: 0;
 }
 
-.ingredients-view li {
+.page-view-recipe .ingredients-view li {
     margin-bottom: 8px;
     font-size: 16px;
 }
 
 /* ---------------------------------------------------------
-   FORM GROUPS
+   FORM GROUPS (edit-recipe.html)
 --------------------------------------------------------- */
-
-.form-group {
+.page-edit-recipe .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.page-edit-recipe .form-group label {
     font-weight: bold;
     display: block;
     margin-bottom: 6px;
 }
 
 /* ---------------------------------------------------------
-   TAGS
+   TAGS (edit-recipe.html)
 --------------------------------------------------------- */
-
-.tags-selection {
+.page-edit-recipe .tags-selection {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.add-tag-row {
+.page-edit-recipe .add-tag-row {
     display: flex;
     gap: 10px;
     margin-top: 10px;
@@ -76,8 +83,7 @@
 /* ---------------------------------------------------------
    COOKING INFO GRID
 --------------------------------------------------------- */
-
-.cooking-info {
+.page-edit-recipe .cooking-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 15px;
@@ -86,31 +92,30 @@
 /* ---------------------------------------------------------
    INGREDIENT ROWS
 --------------------------------------------------------- */
-
-.ingredient-row {
+.page-edit-recipe .ingredient-row {
     display: grid;
-    grid-template-columns: 80px 80px 1fr 40px;
+    grid-template-columns: 80px 100px 1fr 40px;
     gap: 10px;
     margin-bottom: 10px;
 }
 
 @media (max-width: 700px) {
-    .ingredient-row {
+    .page-edit-recipe .ingredient-row {
         grid-template-columns: 1fr 1fr 1fr 40px;
     }
 }
 
 /* ---------------------------------------------------------
-   FILTER BAR
+   FILTER BAR (recipes.html)
 --------------------------------------------------------- */
-.filter-bar {
+.page-recipes .filter-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 20px;
 }
 
-.filter-btn {
+.page-recipes .filter-btn {
     padding: 6px 14px;
     border-radius: 20px;
     background: #eee;
@@ -120,38 +125,30 @@
     transition: 0.2s;
 }
 
-.filter-btn.active {
-    background: #4a90e2;
+.page-recipes .filter-btn.active {
+    background: var(--sage);
     color: white;
 }
 
 /* ---------------------------------------------------------
-   RESPONSIVE
+   SCREEN AWAKE BUTTON (view-recipe.html)
 --------------------------------------------------------- */
-
-@media (max-width: 700px) {
-    .ingredient-row {
-        grid-template-columns: 1fr 1fr 1fr 40px;
-    }
-}
-
-   .screen-awake-toggle {
+.page-view-recipe .screen-awake-toggle {
     position: fixed;
     right: 16px;
     bottom: 16px;
     padding: 8px 14px;
     border-radius: 999px;
     border: none;
-    background: #333;
-    color: #fff;
+    background: var(--sage-dark);
+    color: white;
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     cursor: pointer;
     z-index: 1000;
 }
 
-.screen-awake-toggle.on {
-    background: #f6c344;
-    color: #222;
+.page-view-recipe .screen-awake-toggle.on {
+    background: var(--sage-light);
+    color: var(--text);
 }
-
