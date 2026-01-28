@@ -1,16 +1,23 @@
 /* ---------------------------------------------------------
-   VIEW RECIPE PAGE
+   VIEW RECIPE PAGE – CLEAN + FIXED
 --------------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRecipe();
+    setupScreenAwakeToggle();
 });
 
+/* ---------------------------------------------------------
+   GET RECIPE ID
+--------------------------------------------------------- */
 function getRecipeId() {
     const params = new URLSearchParams(window.location.search);
     return params.get("id");
 }
 
+/* ---------------------------------------------------------
+   LOAD RECIPE
+--------------------------------------------------------- */
 function loadRecipe() {
     const recipeId = getRecipeId();
     if (!recipeId) {
@@ -19,17 +26,22 @@ function loadRecipe() {
         return;
     }
 
-    const recipe = StorageService.getRecipe(id);
+    // FIXED: correct function name
+    const recipe = StorageService.getRecipe(recipeId);
     if (!recipe) {
         alert("Recipe not found.");
         window.location.href = "recipes.html";
         return;
     }
 
-    // Fill title
-    document.getElementById("recipeTitle").textContent = recipe.title;
+    /* ------------------------------
+       BASIC FIELDS
+    ------------------------------ */
+    document.getElementById("recipeTitle").textContent = recipe.title || "Untitled";
 
-    // Tags
+    /* ------------------------------
+       TAGS
+    ------------------------------ */
     const tagContainer = document.getElementById("recipeTags");
     tagContainer.innerHTML = "";
     (recipe.tags || []).forEach(tag => {
@@ -39,94 +51,36 @@ function loadRecipe() {
         tagContainer.appendChild(pill);
     });
 
-    // Ingredients
-    const ingList = document.getElementById("ingredientsList");
-    ingList.innerHTML = "";
-    (recipe.ingredients || []).forEach(ing => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            <label>
-                <input type="checkbox" class="ingredient-check">
-                ${ing.amount} ${ing.unit} ${ing.name}
-            </label>
-        `;
-        ingList.appendChild(li);
-    });
+    /* ------------------------------
+       INGREDIENTS (with fractions)
+    ------------------------------ */
+    renderIngredients(recipe.ingredients || []);
 
-    // Cooking info
+    /* ------------------------------
+       COOKING INFO
+    ------------------------------ */
     document.getElementById("cookingTime").textContent = formatTime(recipe.cookingTime) || "—";
     document.getElementById("ovenTemp").textContent = formatTemp(recipe.ovenTemp) || "—";
     document.getElementById("servings").textContent = recipe.servings || "—";
 
-   // Time formatting
-   function formatTime(minutes) {
-    const mins = parseInt(minutes, 10);
-    if (isNaN(mins) || mins <= 0) return "";
-
-    if (mins < 60) {
-        return `${mins} mins`;
-    }
-
-    const hours = Math.floor(mins / 60);
-    const remaining = mins % 60;
-
-    if (remaining === 0) {
-        return `${hours} hr`;
-    }
-
-    return `${hours} hr ${remaining} mins`;
-}
-
-// Temperature
-   function formatTemp(temp) {
-    if (!temp) return "";
-    return `${temp}°C`;
-}
-
-    // Instructions
+    /* ------------------------------
+       INSTRUCTIONS
+    ------------------------------ */
     document.getElementById("instructionsText").textContent =
         recipe.instructions || "No instructions provided.";
 }
 
+/* ---------------------------------------------------------
+   EDIT BUTTON
+--------------------------------------------------------- */
 function editRecipe() {
     const recipeId = getRecipeId();
     window.location.href = `edit-recipe.html?id=${recipeId}`;
 }
 
 /* ---------------------------------------------------------
-   VIEW RECIPE – LOAD + DISPLAY
+   TIME + TEMP FORMATTERS
 --------------------------------------------------------- */
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadAndRenderRecipe();
-    setupScreenAwakeToggle();
-});
-
-/* ---------------------------------------------------------
-   LOAD + RENDER
---------------------------------------------------------- */
-
-function loadAndRenderRecipe() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    if (!id) return;
-
-    const recipe = StorageService.getRecipeById(id);
-    if (!recipe) return;
-
-    // Basic fields (adapt IDs to your HTML)
-    document.getElementById("recipeTitle").textContent = recipe.title || "Untitled";
-    document.getElementById("cookingTime").textContent = formatTime(recipe.cookingTime) || "–";
-    document.getElementById("ovenTemp").textContent = formatTemp(recipe.ovenTemp) || "–";
-    document.getElementById("servings").textContent = recipe.servings || "–";
-
-    renderIngredients(recipe.ingredients || []);
-}
-
-/* ---------------------------------------------------------
-   TIME + TEMP FORMATTERS (you already have these)
---------------------------------------------------------- */
-
 function formatTime(minutes) {
     const mins = parseInt(minutes, 10);
     if (isNaN(mins) || mins <= 0) return "";
@@ -146,9 +100,8 @@ function formatTemp(temp) {
 }
 
 /* ---------------------------------------------------------
-   FRACTION DISPLAY (F3) + UNIT-AWARE AMOUNT
+   FRACTION DISPLAY
 --------------------------------------------------------- */
-
 const fractionUnitsView = ["cup", "tsp", "tbsp", "piece", "item", "whole"];
 
 const FRACTIONS_F3_VIEW = [
@@ -170,10 +123,7 @@ function toFractionDisplay(value) {
     const whole = Math.floor(num);
     const decimal = num - whole;
 
-    if (decimal < 0.05) {
-        // basically whole number
-        return whole.toString();
-    }
+    if (decimal < 0.05) return whole.toString();
 
     let best = null;
     let bestDiff = Infinity;
@@ -186,10 +136,7 @@ function toFractionDisplay(value) {
         }
     });
 
-    if (!best || bestDiff > 0.06) {
-        // too far from known fraction → show decimal
-        return num.toString();
-    }
+    if (!best || bestDiff > 0.06) return num.toString();
 
     if (whole === 0) return best.label;
     return `${whole} ${best.label}`;
@@ -206,7 +153,6 @@ function formatAmount(amount, unit) {
 /* ---------------------------------------------------------
    RENDER INGREDIENTS
 --------------------------------------------------------- */
-
 function renderIngredients(ingredients) {
     const list = document.getElementById("ingredientsList");
     if (!list) return;
@@ -230,9 +176,8 @@ function renderIngredients(ingredients) {
 }
 
 /* ---------------------------------------------------------
-   SCREEN AWAKE – FLOATING BUTTON (WA4)
+   SCREEN AWAKE BUTTON
 --------------------------------------------------------- */
-
 let wakeLock = null;
 let screenAwakeOn = false;
 
@@ -269,7 +214,6 @@ async function releaseWakeLock() {
 }
 
 function setupScreenAwakeToggle() {
-    // Create floating button
     const btn = document.createElement("button");
     btn.id = "screenAwakeToggle";
     btn.classList.add("screen-awake-toggle");
@@ -285,7 +229,6 @@ function setupScreenAwakeToggle() {
 
     updateScreenAwakeButton();
 
-    // Auto-release on page hide
     document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
             releaseWakeLock();
@@ -305,4 +248,3 @@ function updateScreenAwakeButton() {
         btn.classList.remove("on");
     }
 }
-
