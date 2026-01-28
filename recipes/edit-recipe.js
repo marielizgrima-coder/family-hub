@@ -234,7 +234,7 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 
         previousUnit = newUnit;
         updateFractionPicker(row);
-    });
+    };
 
     // Add fraction picker
     addFractionPicker(row);
