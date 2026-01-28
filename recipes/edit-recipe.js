@@ -139,7 +139,7 @@ function addIngredientRow(amount = "", unit = "", name = "") {
     row.classList.add("ingredient-row");
 
     row.innerHTML = `
-        <input type="text" class="ing-amount" placeholder="Amt" value="${amount}">
+        <input type="number" class="ing-amount" placeholder="Amt" value="${amount}" step="0.01" min="0">
 
         <select class="ing-unit">
             <option value="">Unit</option>
