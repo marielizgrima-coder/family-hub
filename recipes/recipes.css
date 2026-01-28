@@ -42,15 +42,76 @@
 /* ---------------------------------------------------------
    INGREDIENT LIST (view-recipe.html)
 --------------------------------------------------------- */
-.page-view-recipe .ingredients-view {
-    list-style: none;
-    padding-left: 0;
+/* INGREDIENT ROW LAYOUT */
+.ingredient-row {
+    display: grid;
+    grid-template-columns: 80px 110px 1fr 40px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
-.page-view-recipe .ingredients-view li {
-    margin-bottom: 8px;
-    font-size: 16px;
+/* Inputs + selects fill their grid cell */
+.ingredient-row input,
+.ingredient-row select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
 }
+
+/* Delete button */
+.delete-ingredient {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    height: 38px;
+}
+
+.delete-ingredient:hover {
+    background: var(--danger-dark);
+}
+
+/* FRACTION PICKER */
+.fraction-wrapper {
+    display: none; /* hidden until unit is selected */
+    grid-column: span 2; /* sits nicely under amount + unit */
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.fraction-button {
+    padding: 6px 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.fraction-select {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: none;
+}
+
+.fraction-select.visible {
+    display: block;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+    .ingredient-row {
+        grid-template-columns: 1fr 1fr 1fr 40px;
+    }
+}
+
 
 /* ---------------------------------------------------------
    FORM GROUPS (edit-recipe.html)
