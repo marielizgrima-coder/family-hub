@@ -100,3 +100,28 @@
     }
 }
 
+/* ---------------------------------------------------------
+   FILTER BAR
+--------------------------------------------------------- */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.filter-btn.active {
+    background: #4a90e2;
+    color: white;
+}
+
