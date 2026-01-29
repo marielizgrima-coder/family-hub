@@ -65,3 +65,41 @@
         </section>
 
         <!-- Ingredients -->
+        <section class="dashboard-section">
+            <h2>Ingredients</h2>
+
+            <div id="ingredientsContainer"></div>
+
+            <button class="small-btn mt-2" onclick="addIngredientRow()">+ Add Ingredient</button>
+        </section>
+
+        <!-- Cooking Info -->
+        <section class="dashboard-section">
+            <h2>Cooking Info</h2>
+
+            <label>Cooking Time</label>
+            <input id="cookingTime" type="text" class="input-full">
+
+            <label>Oven Temp</label>
+            <input id="ovenTemp" type="text" class="input-full">
+
+            <label>Servings</label>
+            <input id="servings" type="text" class="input-full">
+        </section>
+
+        <!-- Instructions -->
+        <section class="dashboard-section">
+            <h2>Instructions</h2>
+            <textarea id="instructions" class="input-full" rows="6"></textarea>
+        </section>
+
+        <button class="save-btn mt-3" onclick="saveRecipe()">Save Recipe</button>
+
+    </main>
+
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/storage-service.js"></script>
+    <script src="edit-recipe.js"></script>
+
+</body>
+</html>
