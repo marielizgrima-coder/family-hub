@@ -44,8 +44,10 @@ function loadRecipe() {
         .join("");
 
     // Cooking info
-    document.getElementById("cookingTime").textContent = recipe.cookingTime || "-";
-    document.getElementById("ovenTemp").textContent = recipe.ovenTemp || "-";
+    document.getElementById("cookingTime").textContent =
+       formatCookingTime(recipe.cookingTime);
+    document.getElementById("ovenTemp").textContent =
+       recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
     document.getElementById("servings").textContent = recipe.servings || "-";
 
     // Instructions
@@ -73,3 +75,24 @@ function toggleFavorite() {
     favBtn.classList.toggle("active", isFav);
     favBtn.textContent = isFav ? "⭐" : "☆";
 }
+/* ---------------------------------------------------------
+   Cooking Time
+--------------------------------------------------------- */
+function formatCookingTime(value) {
+    const mins = parseInt(value, 10);
+    if (isNaN(mins) || mins <= 0) return "-";
+
+    if (mins < 60) return `${mins} mins`;
+
+    const hours = Math.floor(mins / 60);
+    const remaining = mins % 60;
+
+    if (remaining === 0) {
+        return hours === 1 ? "1 hr" : `${hours} hrs`;
+    }
+
+    return hours === 1
+        ? `1 hr ${remaining} mins`
+        : `${hours} hrs ${remaining} mins`;
+}
+
