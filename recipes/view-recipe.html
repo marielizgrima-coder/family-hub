@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Recipe</title>
+
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="recipes.css">
 </head>
 
-    <body class="page-view-recipe">
+<body class="page-view-recipe">
 
     <!-- Sidebar Toggle -->
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -29,10 +30,16 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <header class="page-header">
+        <header class="page-header flex-between">
             <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
-            <h1 id="recipeTitle">Recipe</h1>
+
+            <div class="flex">
+                <button id="favBtn" class="star-btn">☆</button>
+                <button class="small-btn ml-2" id="editBtn">Edit</button>
+            </div>
         </header>
+
+        <h1 id="recipeTitle"></h1>
 
         <section class="dashboard-section">
             <h2>Tags</h2>
@@ -42,11 +49,6 @@
         <section class="dashboard-section">
             <h2>Ingredients</h2>
             <ul id="ingredientsList" class="ingredients-view"></ul>
-
-            <!-- Future: Add to shopping list -->
-            <button class="small-btn" onclick="alert('Coming soon: Add to shopping list!')">
-                Add Selected to Shopping List
-            </button>
         </section>
 
         <section class="dashboard-section">
@@ -61,8 +63,6 @@
             <p id="instructionsText"></p>
         </section>
 
-        <button class="edit-btn" onclick="editRecipe()">Edit Recipe</button>
-
     </main>
 
     <script src="../js/sidebar.js"></script>
@@ -71,4 +71,3 @@
 
 </body>
 </html>
-
