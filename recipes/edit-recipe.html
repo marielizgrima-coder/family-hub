@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Recipe</title>
+
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="recipes.css">
 </head>
 
-    <body class="page-edit-recipe">
+<body class="page-edit-recipe">
 
     <!-- Sidebar Toggle -->
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -29,85 +30,38 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <header class="page-header">
+        <header class="page-header flex-between">
             <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
-            <h1 id="pageTitle">Add Recipe</h1>
+
+            <div class="flex">
+                <button id="favBtn" class="star-btn">☆</button>
+                <button id="deleteBtn" class="delete-btn ml-2" style="display:none;">Delete</button>
+            </div>
         </header>
 
+        <h1 id="pageTitle">Add Recipe</h1>
+
+        <!-- Recipe Name -->
         <section class="dashboard-section">
-
-            <!-- RECIPE NAME -->
-            <div class="form-group">
-                <label for="recipeName">Recipe Name:</label>
-                <input type="text" id="recipeName" placeholder="Enter recipe name">
-            </div>
-
-            <!-- TAGS -->
-            <div class="form-group">
-                <label>Tags:</label>
-
-                <div class="tags-selection">
-                    <select id="existingTags" onchange="addExistingTag(this.value)">
-                        <option value="">Select from existing tags</option>
-                    </select>
-
-                    <div class="tag-container" id="tagContainer">
-                        <!-- Tag pills injected here -->
-                    </div>
-                </div>
-
-                <div class="add-tag-row">
-                    <input type="text" id="newTagInput" placeholder="Or type a new tag">
-                    <button class="small-btn" onclick="addNewTag()">+ Add New</button>
-                </div>
-            </div>
-
-            <!-- INGREDIENTS -->
-            <div class="form-group">
-                <label>Ingredients:</label>
-
-                <div id="ingredientsContainer">
-                    <!-- Ingredient rows injected here -->
-                </div>
-
-                <button class="small-btn" onclick="addIngredientRow()">+ Add Ingredient</button>
-            </div>
-
-            <!-- COOKING INFO -->
-            <div class="form-group cooking-info">
-                <div>
-                    <label for="cookingTime">Cooking Time:</label>
-                    <input type="text" id="cookingTime" placeholder="e.g. 45 min">
-                </div>
-
-                <div>
-                    <label for="ovenTemp">Oven Temp:</label>
-                    <input type="text" id="ovenTemp" placeholder="e.g. 180°C">
-                </div>
-
-                <div>
-                    <label for="servings">Servings:</label>
-                    <input type="number" id="servings" min="1" placeholder="e.g. 4">
-                </div>
-            </div>
-
-            <!-- INSTRUCTIONS -->
-            <div class="form-group">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" placeholder="Enter cooking instructions..."></textarea>
-            </div>
-
-            <!-- SAVE BUTTON -->
-            <button class="save-btn" onclick="saveRecipe()">Save Recipe</button>
-
+            <label>Recipe Name</label>
+            <input id="recipeName" type="text" class="input-full">
         </section>
 
-    </main>
+        <!-- Tags -->
+        <section class="dashboard-section">
+            <h2>Tags</h2>
 
-    <script src="../js/sidebar.js"></script>
-    <script src="../js/storage-service.js"></script>
-    <script src="edit-recipe.js"></script>
+            <div class="flex">
+                <select id="existingTags" class="input-flex"></select>
+                <button class="small-btn ml-2" onclick="addExistingTag(existingTags.value)">Add</button>
+            </div>
 
-</body>
-</html>
+            <div class="flex mt-2">
+                <input id="newTagInput" type="text" class="input-flex" placeholder="New tag">
+                <button class="small-btn ml-2" onclick="addNewTag()">Add</button>
+            </div>
 
+            <div id="tagContainer" class="tag-container mt-2"></div>
+        </section>
+
+        <!-- Ingredients -->
