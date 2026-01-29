@@ -16,7 +16,7 @@
    RESET + BASE
 --------------------------------------------------------- */
 * {
-    margin: 100;
+    margin: -250;
     padding: 0;
     box-sizing: border-box;
     font-family: "Segoe UI", sans-serif;
