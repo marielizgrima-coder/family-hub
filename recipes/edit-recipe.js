@@ -58,8 +58,10 @@ function loadRecipeData(id) {
     });
 
     // Cooking info
-    document.getElementById("cookingTime").value = recipe.cookingTime;
-    document.getElementById("ovenTemp").value = recipe.ovenTemp;
+    document.getElementById("cookingTime").textContent =
+       formatCookingTime(recipe.cookingTime);
+    document.getElementById("ovenTemp").textContent =
+       recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
     document.getElementById("servings").value = recipe.servings;
 
     // Instructions
