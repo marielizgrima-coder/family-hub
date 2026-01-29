@@ -111,7 +111,8 @@ body {
    HEADERS
 --------------------------------------------------------- */
 .page-header {
-    margin-bottom: 25px;
+    Display: Flex;
+    margin: 20px, 0, 0, 25px;
 }
 
 .page-header h1 {
