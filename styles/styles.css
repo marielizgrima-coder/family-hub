@@ -155,15 +155,16 @@ body {
     padding: 20px;
     border-radius: 12px;
     text-align: center;
-    font-size: 18px;
+    font-size: 35px;
     text-decoration: none;
-    color: var(--text);
+    color: white;
     font-weight: bold;
     transition: 0.2s;
 }
 
 .quick-card:hover {
     background: var(--sage-light);
+      color: (--text);
 }
 
 /* ---------------------------------------------------------
