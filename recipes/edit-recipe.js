@@ -283,3 +283,24 @@ function updateFractionPicker(row) {
         wrapper.style.display = "none";
     }
 }
+
+/* ---------------------------------------------------------
+   Cooking Time
+--------------------------------------------------------- */
+function formatCookingTime(value) {
+    const mins = parseInt(value, 10);
+    if (isNaN(mins) || mins <= 0) return "-";
+
+    if (mins < 60) return `${mins} mins`;
+
+    const hours = Math.floor(mins / 60);
+    const remaining = mins % 60;
+
+    if (remaining === 0) {
+        return hours === 1 ? "1 hr" : `${hours} hrs`;
+    }
+
+    return hours === 1
+        ? `1 hr ${remaining} mins`
+        : `${hours} hrs ${remaining} mins`;
+}
