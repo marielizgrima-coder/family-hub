@@ -45,18 +45,18 @@
         <!-- Tags -->
         <section class="dashboard-section">
             <h2>Tags</h2>
-
+        
+            <!-- Existing tags dropdown (auto-add on change) -->
             <div class="flex">
-                <select id="existingTags" class="input-flex"></select>
-                <button class="small-btn ml-2" onclick="addExistingTag()">Add</button>
-
+                <select id="existingTags" class="input-flex" onchange="addExistingTag()"></select>
             </div>
-
+        
+            <!-- New tag input -->
             <div class="flex mt-2">
                 <input id="newTagInput" type="text" class="input-flex" placeholder="New tag">
                 <button class="small-btn ml-2" onclick="addNewTag()">Add</button>
             </div>
-
+        
             <div id="tagContainer" class="tag-container mt-2"></div>
         </section>
 
