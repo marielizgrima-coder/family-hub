@@ -77,10 +77,17 @@ function loadExistingTags() {
     });
 }
 
-function addExistingTag(tag) {
+function addExistingTag() {
+    const select = document.getElementById("existingTags");
+    const tag = select.value;
     if (!tag) return;
+
     addTagPill(tag);
+
+    // Reset dropdown to placeholder
+    select.value = "";
 }
+
 
 function addNewTag() {
     const input = document.getElementById("newTagInput");
