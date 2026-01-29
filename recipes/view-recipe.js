@@ -44,10 +44,9 @@ function loadRecipe() {
         .join("");
 
     // Cooking info
-    document.getElementById("cookingTime").textContent =
-       formatCookingTime(recipe.cookingTime);
-    document.getElementById("ovenTemp").textContent =
-       recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
+   
+    document.getElementById("ovenTemp").textContent = recipe.ovenTemp || "-";
+    document.getElementById("cookingTime").textContent = recipe.cookingTime || "-";
     document.getElementById("servings").textContent = recipe.servings || "-";
 
     // Instructions
