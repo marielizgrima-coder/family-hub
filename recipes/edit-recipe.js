@@ -258,8 +258,8 @@ function saveRecipe() {
         title,
         tags,
         ingredients,
-        cookingTime: document.getElementById("cookingTime").value.trim(),
-        ovenTemp: document.getElementById("ovenTemp").value.trim(),
+        cookingTime: parseInt(document.getElementById("cookingTime").value, 10) || 0,
+        ovenTemp: parseInt(document.getElementById("ovenTemp").value, 10) || 0,
         servings: document.getElementById("servings").value.trim(),
         instructions: document.getElementById("instructions").value.trim()
     };
