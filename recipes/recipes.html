@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipes</title>
+
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="recipes.css">
 </head>
 
-    <body class="page-recipes">
+<body class="page-recipes">
 
     <!-- Sidebar Toggle -->
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -18,7 +19,7 @@
         <h2>Menu</h2>
         <ul>
             <li><a href="../index.html">Dashboard</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
+            <li><a href="recipes.html" class="active">Recipes</a></li>
             <li><a href="#">Meal Planner</a></li>
             <li><a href="#">Shopping List</a></li>
             <li><a href="#">Calendar</a></li>
@@ -29,17 +30,13 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <header class="page-header">
+        <header class="page-header flex-between">
             <h1>Recipes</h1>
             <button class="small-btn" onclick="window.location.href='edit-recipe.html'">+ Add Recipe</button>
         </header>
 
-        <div id="filterBar" class="filter-bar">
-        <!-- Buttons will be injected by JS -->
-        </div>
-
-        <section id="recipesList" class="recipes-grid">
-            <!-- Recipe cards injected by JS -->
+        <section class="dashboard-section">
+            <div id="recipesList" class="recipes-grid"></div>
         </section>
 
     </main>
@@ -50,4 +47,3 @@
 
 </body>
 </html>
-
