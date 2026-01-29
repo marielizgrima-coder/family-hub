@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------
-   EDIT / ADD RECIPE PAGE — CLEAN + FIXED + UNIFIED
+   EDIT / ADD RECIPE PAGE
 --------------------------------------------------------- */
 
 let editingId = null;
@@ -18,18 +18,19 @@ function checkIfEditing() {
 
     if (editingId) {
         document.getElementById("pageTitle").textContent = "Edit Recipe";
+        document.getElementById("deleteBtn").style.display = "inline-block";
         loadRecipeData(editingId);
     }
 }
 
 /* ---------------------------------------------------------
-   LOAD EXISTING RECIPE INTO FORM
+   LOAD EXISTING RECIPE
 --------------------------------------------------------- */
 function loadRecipeData(id) {
     const recipe = StorageService.getRecipe(id);
     if (!recipe) return;
 
-    document.getElementById("recipeName").value = recipe.title || "";
+    document.getElementById("recipeName").value = recipe.title;
 
     // Tags
     (recipe.tags || []).forEach(tag => addTagPill(tag));
@@ -40,12 +41,21 @@ function loadRecipeData(id) {
     });
 
     // Cooking info
-    document.getElementById("cookingTime").value = recipe.cookingTime || "";
-    document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
-    document.getElementById("servings").value = recipe.servings || "";
+    document.getElementById("cookingTime").value = recipe.cookingTime;
+    document.getElementById("ovenTemp").value = recipe.ovenTemp;
+    document.getElementById("servings").value = recipe.servings;
 
     // Instructions
-    document.getElementById("instructions").value = recipe.instructions || "";
+    document.getElementById("instructions").value = recipe.instructions;
+
+    // Favourite
+    const favBtn = document.getElementById("favBtn");
+    favBtn.classList.toggle("active", recipe.isFavorite);
+    favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
+    favBtn.onclick = toggleFavorite;
+
+    // Delete
+    document.getElementById("deleteBtn").onclick = deleteRecipe;
 }
 
 /* ---------------------------------------------------------
@@ -66,7 +76,6 @@ function loadExistingTags() {
 function addExistingTag(tag) {
     if (!tag) return;
     addTagPill(tag);
-    document.getElementById("existingTags").value = "";
 }
 
 function addNewTag() {
@@ -76,7 +85,6 @@ function addNewTag() {
 
     StorageService.addTag(tag);
     addTagPill(tag);
-
     input.value = "";
 }
 
@@ -99,36 +107,8 @@ function removeTag(el) {
 }
 
 /* ---------------------------------------------------------
-   UNIT CONVERSION
---------------------------------------------------------- */
-function convertUnit(amount, from, to) {
-    const value = parseFloat(amount);
-    if (isNaN(value)) return amount;
-
-    const table = {
-        g: { kg: value / 1000 },
-        kg: { g: value * 1000 },
-
-        ml: { l: value / 1000 },
-        l: { ml: value * 1000 },
-
-        oz: { lb: value / 16 },
-        lb: { oz: value * 16 },
-
-        tsp: { tbsp: value / 3, cup: value / 48 },
-        tbsp: { tsp: value * 3, cup: value / 16 },
-        cup: { tbsp: value * 16, tsp: value * 48 }
-    };
-
-    return table[from]?.[to] ?? value;
-}
-
-/* ---------------------------------------------------------
    INGREDIENT ROWS
 --------------------------------------------------------- */
-
-const fractionUnits = ["cup", "tsp", "tbsp", "piece", "item", "whole"];
-
 function addIngredientRow(amount = "", unit = "", name = "") {
     const container = document.getElementById("ingredientsContainer");
 
@@ -151,86 +131,36 @@ function addIngredientRow(amount = "", unit = "", name = "") {
             <option value="lb">lb</option>
             <option value="piece">piece</option>
             <option value="item">item</option>
-            <option value="clove">clove</option>
-            <option value="stick">stick</option>
-            <option value="slice">slice</option>
-            <option value="head">head</option>
-            <option value="bunch">bunch</option>
-            <option value="can">can</option>
-            <option value="packet">packet</option>
         </select>
 
         <input type="text" class="ing-name" placeholder="Ingredient" value="${name}">
-        <button class="delete-ingredient" onclick="this.parentElement.remove()">×</button>
+        <button class="delete-btn" onclick="this.parentElement.remove()">×</button>
     `;
 
     container.appendChild(row);
 
-    // Set initial unit
     if (unit) row.querySelector(".ing-unit").value = unit;
-
-    // Unit conversion + fraction picker
-    const unitSelect = row.querySelector(".ing-unit");
-    const amountInput = row.querySelector(".ing-amount");
-    let previousUnit = unit;
-
-    unitSelect.addEventListener("change", () => {
-        const newUnit = unitSelect.value;
-
-        if (previousUnit && newUnit && previousUnit !== newUnit) {
-            const newAmount = convertUnit(amountInput.value, previousUnit, newUnit);
-            amountInput.value = Math.round(newAmount * 100) / 100;
-        }
-
-        previousUnit = newUnit;
-        updateFractionPicker(row);
-    });
-
-    // Fraction picker
-    addFractionPicker(row);
-    updateFractionPicker(row);
 }
 
 /* ---------------------------------------------------------
-   FRACTION PICKER
+   FAVOURITE
 --------------------------------------------------------- */
-function addFractionPicker(row) {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("fraction-wrapper");
-    wrapper.style.display = "none";
+function toggleFavorite() {
+    const isFav = StorageService.toggleFavorite(editingId);
 
-    const select = document.createElement("select");
-    select.classList.add("fraction-select");
-
-    [
-        { label: "¼", value: 0.25 },
-        { label: "½", value: 0.5 },
-        { label: "¾", value: 0.75 }
-    ].forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f.value;
-        opt.textContent = f.label;
-        select.appendChild(opt);
-    });
-
-    select.addEventListener("change", () => {
-        const amountInput = row.querySelector(".ing-amount");
-        amountInput.value = select.value;
-    });
-
-    wrapper.appendChild(select);
-    row.appendChild(wrapper);
+    const favBtn = document.getElementById("favBtn");
+    favBtn.classList.toggle("active", isFav);
+    favBtn.textContent = isFav ? "⭐" : "☆";
 }
 
-function updateFractionPicker(row) {
-    const unit = row.querySelector(".ing-unit").value;
-    const wrapper = row.querySelector(".fraction-wrapper");
+/* ---------------------------------------------------------
+   DELETE RECIPE
+--------------------------------------------------------- */
+function deleteRecipe() {
+    if (!confirm("Delete this recipe?")) return;
 
-    if (unit && fractionUnits.includes(unit)) {
-        wrapper.style.display = "inline-flex";
-    } else {
-        wrapper.style.display = "none";
-    }
+    StorageService.deleteRecipe(editingId);
+    window.location.href = "recipes.html";
 }
 
 /* ---------------------------------------------------------
