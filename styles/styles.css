@@ -151,7 +151,7 @@ body {
 }
 
 .quick-card {
-    background: var(--neutral);
+    background: var(--sage-dark);
     padding: 20px;
     border-radius: 12px;
     text-align: center;
