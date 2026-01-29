@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     checkIfEditing();
 });
 
+/* Fraction*/
+const fractionUnits = ["cup", "tsp", "tbsp", "piece", "item", "whole"];
+
+
 /* ---------------------------------------------------------
    CHECK IF EDITING
 --------------------------------------------------------- */
@@ -140,7 +144,51 @@ function addIngredientRow(amount = "", unit = "", name = "") {
     container.appendChild(row);
 
     if (unit) row.querySelector(".ing-unit").value = unit;
+   
+   // Add fraction picker UI
+   addFractionPicker(row);
+   
+   // Show/hide based on current unit
+   updateFractionPicker(row);
+   
+   // Update visibility when unit changes
+   row.querySelector(".ing-unit").addEventListener("change", () => {
+       updateFractionPicker(row);
+   });
+
 }
+
+/* Fraction Logic*/
+function addFractionPicker(row) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("fraction-wrapper");
+    wrapper.style.display = "none";
+
+    const select = document.createElement("select");
+    select.classList.add("fraction-select");
+
+    const fractions = [
+        { label: "¼", value: 0.25 },
+        { label: "½", value: 0.5 },
+        { label: "¾", value: 0.75 }
+    ];
+
+    fractions.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.value;
+        opt.textContent = f.label;
+        select.appendChild(opt);
+    });
+
+    select.addEventListener("change", () => {
+        const amountInput = row.querySelector(".ing-amount");
+        amountInput.value = select.value;
+    });
+
+    wrapper.appendChild(select);
+    row.appendChild(wrapper);
+}
+
 
 /* ---------------------------------------------------------
    FAVOURITE
@@ -201,4 +249,17 @@ function saveRecipe() {
     }
 
     window.location.href = "recipes.html";
+}
+
+
+/* Fraction Visibility */ 
+function updateFractionPicker(row) {
+    const unit = row.querySelector(".ing-unit").value;
+    const wrapper = row.querySelector(".fraction-wrapper");
+
+    if (unit && fractionUnits.includes(unit)) {
+        wrapper.style.display = "inline-flex";
+    } else {
+        wrapper.style.display = "none";
+    }
 }
