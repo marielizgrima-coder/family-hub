@@ -97,7 +97,7 @@ body {
    MAIN CONTENT
 --------------------------------------------------------- */
 .main-content {
-    margin-left: 20, 0, 0, 50;
+    margin-left: 20px, 0, 0, 50px;
     padding: 20px;
     width: 100%;
     transition: 0.3s ease;
