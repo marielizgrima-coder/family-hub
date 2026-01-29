@@ -255,3 +255,14 @@ button {
 .delete-ingredient:hover {
     background: var(--danger-dark);
 }
+
+.fraction-wrapper {
+    margin-left: 8px;
+}
+
+.fraction-select {
+    padding: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
