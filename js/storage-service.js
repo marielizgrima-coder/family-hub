@@ -1,80 +1,131 @@
 /* ---------------------------------------------------------
-   STORAGE SERVICE
-   A clean, expandable system for saving all app data.
-   Everything is stored under one key: "FAMILY_HUB_DATA"
+   STORAGE SERVICE — RECIPES + TAGS
 --------------------------------------------------------- */
 
-const StorageService = {
-    // Load full app data
-    loadData() {
-        const raw = localStorage.getItem("FAMILY_HUB_DATA");
-        return raw ? JSON.parse(raw) : {
-            recipes: {},
-            tags: {
-                recipes: [],
-                shopping: [],
-                calendar: [],
-                todos: []
-            }
-        };
-    },
+const StorageService = (() => {
+    const RECIPES_KEY = "fh_recipes";
+    const TAGS_KEY = "fh_tags";
 
-    // Save full app data
-    saveData(data) {
-        localStorage.setItem("FAMILY_HUB_DATA", JSON.stringify(data));
-    },
+    /* -------------------- CORE HELPERS -------------------- */
 
-    /* ---------------------------------------------------------
-       TAGS
-    --------------------------------------------------------- */
-
-    getTags() {
-        const data = this.loadData();
-        return data.tags.recipes || [];
-    },
-
-    addTag(tag) {
-        const data = this.loadData();
-        if (!data.tags.recipes.includes(tag)) {
-            data.tags.recipes.push(tag);
-            this.saveData(data);
+    function _load(key) {
+        try {
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : [];
+        } catch {
+            return [];
         }
-    },
-
-    /* ---------------------------------------------------------
-       RECIPES
-    --------------------------------------------------------- */
-
-    getAllRecipes() {
-        const data = this.loadData();
-        return Object.values(data.recipes);
-    },
-
-    getRecipe(id) {
-        const data = this.loadData();
-        return data.recipes[id] || null;
-    },
-
-    addRecipe(recipe) {
-        const data = this.loadData();
-        const id = Date.now().toString(); // simple unique ID
-        data.recipes[id] = { id, ...recipe };
-        this.saveData(data);
-        return id;
-    },
-
-    updateRecipe(id, updatedRecipe) {
-        const data = this.loadData();
-        if (data.recipes[id]) {
-            data.recipes[id] = { id, ...updatedRecipe };
-            this.saveData(data);
-        }
-    },
-
-    deleteRecipe(id) {
-        const data = this.loadData();
-        delete data.recipes[id];
-        this.saveData(data);
     }
-};
 
+    function _save(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function _generateId() {
+        return Date.now().toString();
+    }
+
+    /* -------------------- RECIPES -------------------- */
+
+    function getAllRecipes() {
+        return _load(RECIPES_KEY);
+    }
+
+    function getAllRecipesSorted() {
+        const recipes = getAllRecipes();
+        return recipes
+            .slice()
+            .sort((a, b) => {
+                // favourites first
+                if (a.isFavorite && !b.isFavorite) return -1;
+                if (!a.isFavorite && b.isFavorite) return 1;
+                // then alphabetical by title
+                return (a.title || "").localeCompare(b.title || "");
+            });
+    }
+
+    function getRecipe(id) {
+        return getAllRecipes().find(r => r.id === id) || null;
+    }
+
+    function addRecipe(data) {
+        const recipes = getAllRecipes();
+        const recipe = {
+            id: _generateId(),
+            title: data.title || "",
+            tags: data.tags || [],
+            ingredients: data.ingredients || [],
+            cookingTime: data.cookingTime || "",
+            ovenTemp: data.ovenTemp || "",
+            servings: data.servings || "",
+            instructions: data.instructions || "",
+            isFavorite: !!data.isFavorite
+        };
+        recipes.push(recipe);
+        _save(RECIPES_KEY, recipes);
+        return recipe.id;
+    }
+
+    function updateRecipe(id, data) {
+        const recipes = getAllRecipes();
+        const idx = recipes.findIndex(r => r.id === id);
+        if (idx === -1) return;
+
+        recipes[idx] = {
+            ...recipes[idx],
+            ...data,
+            id, // keep id
+            isFavorite: data.isFavorite ?? recipes[idx].isFavorite ?? false
+        };
+
+        _save(RECIPES_KEY, recipes);
+    }
+
+    function deleteRecipe(id) {
+        const recipes = getAllRecipes().filter(r => r.id !== id);
+        _save(RECIPES_KEY, recipes);
+    }
+
+    function toggleFavorite(id) {
+        const recipes = getAllRecipes();
+        const idx = recipes.findIndex(r => r.id === id);
+        if (idx === -1) return;
+
+        recipes[idx].isFavorite = !recipes[idx].isFavorite;
+        _save(RECIPES_KEY, recipes);
+        return recipes[idx].isFavorite;
+    }
+
+    /* -------------------- TAGS -------------------- */
+
+    function getTags() {
+        const tags = _load(TAGS_KEY);
+        return tags.slice().sort((a, b) => a.localeCompare(b));
+    }
+
+    function addTag(tag) {
+        const tags = _load(TAGS_KEY);
+        if (!tags.includes(tag)) {
+            tags.push(tag);
+            _save(TAGS_KEY, tags);
+        }
+    }
+
+    function deleteTag(tag) {
+        const tags = _load(TAGS_KEY).filter(t => t !== tag);
+        _save(TAGS_KEY, tags);
+    }
+
+    return {
+        getAllRecipes,
+        getAllRecipesSorted,
+        getRecipe,
+        addRecipe,
+        updateRecipe,
+        deleteRecipe,
+        toggleFavorite,
+        getTags,
+        addTag,
+        deleteTag
+    };
+})();
