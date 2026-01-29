@@ -30,16 +30,11 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
+        <!-- HEADER -->
         <header class="page-header flex-between">
             <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
-
-            <div class="flex">
-                <button id="favBtn" class="star-btn">☆</button>
-                <button id="deleteBtn" class="delete-btn ml-2" style="display:none;">Delete</button>
-            </div>
+            <h1 id="pageTitle">Add Recipe</h1>
         </header>
-
-        <h1 id="pageTitle">Add Recipe</h1>
 
         <!-- Recipe Name -->
         <section class="dashboard-section">
@@ -93,7 +88,18 @@
             <textarea id="instructions" class="input-full" rows="6"></textarea>
         </section>
 
-        <button class="save-btn mt-3" onclick="saveRecipe()">Save Recipe</button>
+        <!-- ACTION BAR -->
+        <section class="dashboard-section mt-3">
+            <div class="flex-between action-bar">
+
+                <div class="flex">
+                    <button id="favBtn" class="star-btn">☆</button>
+                    <button id="deleteBtn" class="delete-btn ml-2" style="display:none;">Delete</button>
+                </div>
+
+                <button class="save-btn" onclick="saveRecipe()">Save Recipe</button>
+            </div>
+        </section>
 
     </main>
 
