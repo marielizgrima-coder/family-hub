@@ -151,20 +151,20 @@ body {
 }
 
 .quick-card {
-    background: var(--sage-dark);
+    background: var(--sage);
     padding: 20px;
     border-radius: 12px;
     text-align: center;
     font-size: 35px;
     text-decoration: none;
-    color: white;
+    color: var(--text);
     font-weight: bold;
     transition: 0.2s;
 }
 
 .quick-card:hover {
     background: var(--sage-light);
-      color: (--text);
+   
 }
 
 /* ---------------------------------------------------------
