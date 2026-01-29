@@ -16,7 +16,7 @@
    RESET + BASE
 --------------------------------------------------------- */
 * {
-    margin: -250;
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Segoe UI", sans-serif;
@@ -97,7 +97,7 @@ body {
    MAIN CONTENT
 --------------------------------------------------------- */
 .main-content {
-    margin-left: 0;
+    margin-left: 50;
     padding: 20px;
     width: 100%;
     transition: 0.3s ease;
