@@ -6,6 +6,19 @@ let editingId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadExistingTags();
+
+    // Add placeholder AFTER loadExistingTags creates the select element
+    const select = document.getElementById("existingTags");
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "-- Select Tag --";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+
+    // Insert placeholder at the top
+    select.insertBefore(placeholder, select.firstChild);
+
     checkIfEditing();
 });
 
