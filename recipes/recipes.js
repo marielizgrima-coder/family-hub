@@ -38,7 +38,9 @@ function loadRecipes() {
                 ${(recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("")}
             </div>
 
-            <button class="small-btn mt-2" onclick="viewRecipe('${recipe.id}')">View</button>
+            const viewBtn = card.querySelector(".view-btn");
+            viewBtn.addEventListener("click", () => viewRecipe(recipe.id));
+
         `;
 
         container.appendChild(card);
