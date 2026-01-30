@@ -35,25 +35,20 @@ function loadRecipe() {
   const tagContainer = document.getElementById("recipeTags");
   tagContainer.innerHTML = (recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("");
 
-  // Ingredients
-  const ingList = document.getElementById("ingredientsList");
-  ingList.innerHTML = (recipe.ingredients || []).map(ing => {
-    const amount = ing.amount === "" || ing.amount === undefined ? "" : ing.amount;
-       ? ""
-       : formatFraction(ing.amount);
-    const unit = ing.unit ? ` ${ing.unit}` : "";
-    return `<li>${amount}${unit} ${ing.name}</li>`;
-  }).join("");
+  
+   // Ingredients
+   const ingList = document.getElementById("ingredientsList");
+   ingList.innerHTML = (recipe.ingredients || []).map(ing => {
+     const amount =
+       ing.amount === "" || ing.amount === undefined
+         ? ""
+         : formatFraction(ing.amount);
    
-//  fraction helper function
-  function formatFraction(amount) {
-  if (amount === 0.25) return "¼";
-  if (amount === 0.5) return "½";
-  if (amount === 0.75) return "¾";
-  return amount;
-}
+     const unit = ing.unit ? ` ${ing.unit}` : "";
+     return `<li>${amount}${unit} ${ing.name}</li>`;
+   }).join("");
 
-
+   
   // Cooking info
   document.getElementById("cookingTime").textContent = formatCookingTime(recipe.cookingTime);
   document.getElementById("ovenTemp").textContent = recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
@@ -101,4 +96,14 @@ function formatCookingTime(value) {
   }
 
   return hours === 1 ? `1 hr ${remaining} mins` : `${hours} hrs ${remaining} mins`;
+}
+/* ---------------------------------------------------------
+   Fractions
+--------------------------------------------------------- */
+//  fraction helper function
+  function formatFraction(amount) {
+  if (amount === 0.25) return "¼";
+  if (amount === 0.5) return "½";
+  if (amount === 0.75) return "¾";
+  return amount;
 }
