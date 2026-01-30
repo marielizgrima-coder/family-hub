@@ -17,6 +17,8 @@ const conversions = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+document.getElementById("favBtn").onclick = toggleFavorite;
+
   loadExistingTags();
   // insert placeholder after select is populated
   const select = document.getElementById("existingTags");
@@ -102,7 +104,7 @@ function addExistingTag() {
   if (!tag) return;
 
   addTagPill(tag);
-  select.value = "";
+  select.selectedIndex = 0;
 }
 
 function addNewTag() {
@@ -211,11 +213,15 @@ function addFractionPicker(row) {
     select.appendChild(opt);
   });
 
-  select.addEventListener("change", () => {
-    const amountInput = row.querySelector(".ing-amount");
-    if (select.value) amountInput.value = parseFloat(select.value);
-    convertUnits(row);
-  });
+    select.addEventListener("change", () => {
+     const amountInput = row.querySelector(".ing-amount");
+     const whole = parseFloat(amountInput.value) || 0;
+     const fraction = parseFloat(select.value) || 0;
+     amountInput.value = (whole + fraction).toFixed(2).replace(/\.00$/, "");
+     select.value = "";
+     convertUnits(row);
+   });
+
 
   wrapper.appendChild(select);
   row.appendChild(wrapper);
@@ -303,6 +309,7 @@ function deleteRecipe() {
    SAVE RECIPE
 --------------------------------------------------------- */
 function saveRecipe() {
+ document.getElementById("deleteBtn").style.display = "inline-block";
   const title = document.getElementById("recipeName").value.trim();
   if (!title) {
     alert("Recipe must have a name.");
@@ -311,15 +318,17 @@ function saveRecipe() {
 
   const tags = [...document.querySelectorAll("#tagContainer .tag-pill")].map(p => p.dataset.tag);
 
-  const ingredients = [...document.querySelectorAll(".ingredient-row")].map(row => {
-    const amountRaw = row.querySelector(".ing-amount").value;
-    const amount = amountRaw === "" ? "" : parseFloat(amountRaw);
-    return {
-      amount: amount === "" ? "" : amount,
-      unit: row.querySelector(".ing-unit").value.trim(),
-      name: row.querySelector(".ing-name").value.trim()
-    };
-  }).filter(ing => ing.name !== "");
+   const ingredients = [...document.querySelectorAll(".ingredient-row")]
+     .map(row => {
+       const amountVal = row.querySelector(".ing-amount").value;
+       return {
+         amount: amountVal === "" ? "" : parseFloat(amountVal),
+         unit: row.querySelector(".ing-unit").value.trim(),
+         name: row.querySelector(".ing-name").value.trim()
+       };
+     })
+     .filter(ing => ing.name);
+
 
   const cookingTimeVal = parseInt(document.getElementById("cookingTime").value, 10) || 0;
   const ovenTempVal = parseInt(document.getElementById("ovenTemp").value, 10) || 0;
