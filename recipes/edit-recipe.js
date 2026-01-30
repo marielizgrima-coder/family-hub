@@ -168,11 +168,12 @@ function addIngredientRow(amount = "", unit = "", name = "") {
   if (unit) row.querySelector(".ing-unit").value = unit;
 
   // Fraction picker integration
-  addFractionPicker(row);
-  updateFractionPicker(row);
+   addFractionPicker(row);
+   
+   if (unit) row.querySelector(".ing-unit").value = unit;
+   
+   updateFractionPicker(row);
 
-  // Unit change triggers fraction visibility and conversion preview
-  const unitSelect = row.querySelector(".ing-unit");
   unitSelect.addEventListener("change", () => {
     updateFractionPicker(row);
     convertUnits(row);
