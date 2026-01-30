@@ -13,7 +13,7 @@
 }
 
 /* ---------------------------------------------------------
-   RECIPE GRID (recipes.html)
+   RECIPES GRID (recipes.html)
 --------------------------------------------------------- */
 .page-recipes .recipes-grid {
     display: grid;
@@ -25,93 +25,43 @@
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow);
 }
 
 .page-recipes .recipe-card h3 {
-    margin-bottom: 10px;
     font-size: 20px;
 }
 
 .page-recipes .recipe-tags {
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #666;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 /* ---------------------------------------------------------
-   INGREDIENT LIST (view-recipe.html)
+   FILTER BAR (recipes.html)
 --------------------------------------------------------- */
-/* INGREDIENT ROW LAYOUT */
-.ingredient-row {
-    display: grid;
-    grid-template-columns: 80px 110px 1fr 40px;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 12px;
+.page-recipes .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
 }
 
-/* Inputs + selects fill their grid cell */
-.ingredient-row input,
-.ingredient-row select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-}
-
-/* Delete button */
-.delete-ingredient {
-    background: var(--danger);
-    color: white;
+.page-recipes .filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #eee;
     border: none;
-    border-radius: 6px;
-    font-size: 18px;
     cursor: pointer;
-    height: 38px;
+    font-size: 14px;
 }
 
-.delete-ingredient:hover {
-    background: var(--danger-dark);
-}
-
-/* FRACTION PICKER */
-.fraction-wrapper {
-    display: none; /* hidden until unit is selected */
-    grid-column: span 2; /* sits nicely under amount + unit */
-    gap: 6px;
-    margin-top: 4px;
-}
-
-.fraction-button {
-    padding: 6px 10px;
-    background: var(--accent);
+.page-recipes .filter-btn.active {
+    background: var(--sage);
     color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
 }
-
-.fraction-select {
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    display: none;
-}
-
-.fraction-select.visible {
-    display: block;
-}
-
-/* MOBILE */
-@media (max-width: 700px) {
-    .ingredient-row {
-        grid-template-columns: 1fr 1fr 1fr 40px;
-    }
-}
-
 
 /* ---------------------------------------------------------
    FORM GROUPS (edit-recipe.html)
@@ -150,66 +100,6 @@
     gap: 15px;
 }
 
-.ingredient-row {
-    display: grid;
-    grid-template-columns: 80px 100px 1fr 40px;
-    gap: 10px;
-    margin-bottom: 10px;
-    align-items: center;
-}
-
-.ingredient-row input,
-.ingredient-row select {
-    width: 100%;
-}
-
-.delete-ingredient {
-    background: var(--danger);
-    border: none;
-    color: white;
-    font-size: 18px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.delete-ingredient:hover {
-    background: var(--danger-dark);
-}
-
-/* Mobile */
-@media (max-width: 700px) {
-    .ingredient-row {
-        grid-template-columns: 1fr 1fr 1fr 40px;
-    }
-}
-}
-}
-
-/* ---------------------------------------------------------
-   FILTER BAR (recipes.html)
---------------------------------------------------------- */
-.page-recipes .filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.page-recipes .filter-btn {
-    padding: 6px 14px;
-    border-radius: 20px;
-    background: #eee;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.page-recipes .filter-btn.active {
-    background: var(--sage);
-    color: white;
-}
-
 /* ---------------------------------------------------------
    SCREEN AWAKE BUTTON (view-recipe.html)
 --------------------------------------------------------- */
@@ -223,7 +113,7 @@
     background: var(--sage-dark);
     color: white;
     font-size: 14px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow);
     cursor: pointer;
     z-index: 1000;
 }
@@ -231,36 +121,4 @@
 .page-view-recipe .screen-awake-toggle.on {
     background: var(--sage-light);
     color: var(--text);
-}
-
-/* ----------------------------------------------------------
-   RECIPE GRID
----------------------------------------------------------- */
-
-.recipes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-/* ----------------------------------------------------------
-   RECIPE CARD
----------------------------------------------------------- */
-
-.recipe-card {
-    background: var(--surface);
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-}
-
-.recipe-card h3 {
-    margin: 0;
-}
-
-.recipe-tags {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
 }
