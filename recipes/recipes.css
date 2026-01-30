@@ -105,7 +105,7 @@
 --------------------------------------------------------- */
 .page-view-recipe .screen-awake-toggle {
     position: fixed;
-    left: 16px;
+    right: 16px;
     top: 16px;
     padding: 8px 14px;
     border-radius: 999px;
