@@ -39,9 +39,20 @@ function loadRecipe() {
   const ingList = document.getElementById("ingredientsList");
   ingList.innerHTML = (recipe.ingredients || []).map(ing => {
     const amount = ing.amount === "" || ing.amount === undefined ? "" : ing.amount;
+       ? ""
+       : formatFraction(ing.amount);
     const unit = ing.unit ? ` ${ing.unit}` : "";
     return `<li>${amount}${unit} ${ing.name}</li>`;
   }).join("");
+   
+//  fraction helper function
+  function formatFraction(amount) {
+  if (amount === 0.25) return "¼";
+  if (amount === 0.5) return "½";
+  if (amount === 0.75) return "¾";
+  return amount;
+}
+
 
   // Cooking info
   document.getElementById("cookingTime").textContent = formatCookingTime(recipe.cookingTime);
