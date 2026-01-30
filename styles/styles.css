@@ -8,6 +8,11 @@
     --neutral: #C2C5AA;
     --bg: #F6F7F2;
     --text: #333333;
+
+    --surface: #ffffff;
+    --border: #dddddd;
+    --shadow: 0 2px 6px rgba(0,0,0,0.08);
+
     --danger: #ff6666;
     --danger-dark: #ff4d4d;
 }
@@ -73,7 +78,7 @@ body {
 }
 
 /* ---------------------------------------------------------
-   SIDEBAR TOGGLE BUTTON
+   SIDEBAR TOGGLE
 --------------------------------------------------------- */
 .toggle-btn {
     position: fixed;
@@ -111,71 +116,37 @@ body {
    HEADERS
 --------------------------------------------------------- */
 .page-header {
-    Display: Flex;
-    margin: 20px, 0, 0px, 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
 }
 
 .page-header h1 {
     font-size: 32px;
-    margin-bottom: 5px;
-}
-
-.page-header p {
-    font-size: 18px;
-    color: #666666;
 }
 
 /* ---------------------------------------------------------
    DASHBOARD SECTIONS
 --------------------------------------------------------- */
 .dashboard-section {
-    background: white;
+    background: var(--surface);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.dashboard-section h2 {
-    margin-bottom: 10px;
-    font-size: 22px;
-}
-
-/* ---------------------------------------------------------
-   QUICK LINKS
---------------------------------------------------------- */
-.quick-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-}
-
-.quick-card {
-    background: var(--sage);
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 35px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-.quick-card:hover {
-    background: var(--sage-light);
-   
+    box-shadow: var(--shadow);
 }
 
 /* ---------------------------------------------------------
    FORMS
 --------------------------------------------------------- */
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
+    border: 1px solid var(--border);
     font-size: 16px;
 }
 
@@ -184,13 +155,13 @@ textarea {
     resize: vertical;
 }
 
+/* ---------------------------------------------------------
+   BUTTONS
+--------------------------------------------------------- */
 button {
     cursor: pointer;
 }
 
-/* ---------------------------------------------------------
-   BUTTONS
---------------------------------------------------------- */
 .small-btn {
     background: var(--sage);
     color: white;
@@ -198,7 +169,6 @@ button {
     padding: 8px 12px;
     border-radius: 6px;
     font-size: 14px;
-    margin-left: 5px;
 }
 
 .small-btn:hover {
@@ -226,7 +196,6 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 10px;
 }
 
 .tag-pill {
@@ -244,12 +213,28 @@ button {
 }
 
 /* ---------------------------------------------------------
-   INGREDIENT DELETE BUTTON
+   INGREDIENT ROW (GLOBAL BASE)
+--------------------------------------------------------- */
+.ingredient-row {
+    display: grid;
+    grid-template-columns: 80px 110px 1fr 40px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ingredient-row input,
+.ingredient-row select {
+    width: 100%;
+}
+
+/* ---------------------------------------------------------
+   DELETE BUTTON
 --------------------------------------------------------- */
 .delete-ingredient {
     background: var(--danger);
-    border: none;
     color: white;
+    border: none;
     font-size: 18px;
     border-radius: 6px;
 }
@@ -258,13 +243,25 @@ button {
     background: var(--danger-dark);
 }
 
+/* ---------------------------------------------------------
+   FRACTIONS
+--------------------------------------------------------- */
 .fraction-wrapper {
     margin-left: 8px;
 }
 
 .fraction-select {
-    padding: 4px;
+    padding: 6px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
+    background: var(--surface);
 }
 
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+@media (max-width: 700px) {
+    .ingredient-row {
+        grid-template-columns: 1fr 1fr 1fr 40px;
+    }
+}
