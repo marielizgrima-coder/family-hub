@@ -107,3 +107,37 @@ function formatCookingTime(value) {
   if (amount === 0.75) return "¾";
   return amount;
 }
+
+/* ---------------------------------------------------------
+   SCREEN AWAKE TOGGLE
+--------------------------------------------------------- */
+const screenBtn = document.getElementById("screenAwakeBtn");
+let wakeLock = null;
+
+// Toggle button click
+screenBtn.addEventListener("click", async () => {
+    if (wakeLock) {
+        // Release wake lock
+        await wakeLock.release();
+        wakeLock = null;
+        screenBtn.classList.remove("on");
+        screenBtn.textContent = "Keep Screen On";
+    } else {
+        try {
+            wakeLock = await navigator.wakeLock.request("screen");
+            screenBtn.classList.add("on");
+            screenBtn.textContent = "Screen Locked On";
+
+            // Re-apply if page visibility changes
+            document.addEventListener("visibilitychange", async () => {
+                if (wakeLock !== null && document.visibilityState === "visible") {
+                    wakeLock = await navigator.wakeLock.request("screen");
+                }
+            });
+        } catch (err) {
+            alert("Screen Wake Lock not supported on this device/browser.");
+            console.error(err);
+        }
+    }
+});
+
