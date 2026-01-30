@@ -165,26 +165,25 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 
   container.appendChild(row);
 
-  if (unit) row.querySelector(".ing-unit").value = unit;
+  const unitSelect = row.querySelector(".ing-unit");
+  const amountInput = row.querySelector(".ing-amount");
 
-  // Fraction picker integration
-   addFractionPicker(row);
-   
-   if (unit) row.querySelector(".ing-unit").value = unit;
-   
-   updateFractionPicker(row);
+  if (unit) unitSelect.value = unit;
+
+  // Fraction picker
+  addFractionPicker(row);
+  updateFractionPicker(row);
 
   unitSelect.addEventListener("change", () => {
     updateFractionPicker(row);
     convertUnits(row);
   });
 
-  // Amount change updates conversion preview
-  row.querySelector(".ing-amount").addEventListener("input", () => convertUnits(row));
+  amountInput.addEventListener("input", () => convertUnits(row));
 
-  // initial conversion
   convertUnits(row);
 }
+
 
 /* Fraction UI */
 function addFractionPicker(row) {
