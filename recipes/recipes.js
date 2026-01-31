@@ -114,7 +114,7 @@ function loadRecipes() {
 
                 <button class="star-btn ${recipe.isFavorite ? "active" : ""}"
                         onclick="toggleFavorite('${recipe.id}', this)">
-                    ${recipe.isFavorite ? "☆" : "☆"}
+                    ${recipe.isFavorite ? "★" : "☆"}
                 </button>
             </div>
 
