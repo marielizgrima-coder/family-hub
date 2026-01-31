@@ -88,7 +88,7 @@ function toggleFavorite() {
     const isFav = StorageService.toggleFavorite(recipeId);
     const favBtn = document.getElementById("favBtn");
     favBtn.classList.toggle("active", isFav);
-    favBtn.textContent = isFav ? "☆" : "☆";
+    favBtn.textContent = isFav ? "★" : "☆";
 }
 
 /* ---------------------------------------------------------
