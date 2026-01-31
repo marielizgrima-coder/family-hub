@@ -1,3 +1,4 @@
+// view-recipe.js
 let recipeId = null;
 let screenAwake = false;
 
@@ -9,48 +10,48 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadRecipe();
 
-  // Keep Screen On toggle
+  // Setup screen awake toggle
   const screenBtn = document.getElementById("screenAwakeBtn");
-  screenBtn.addEventListener("click", () => {
-    screenAwake = !screenAwake;
-    screenBtn.textContent = screenAwake ? "Screen On ✔" : "Keep Screen On";
-    screenBtn.classList.toggle("on", screenAwake);
-    // Could use Wake Lock API in the future
-  });
+  screenBtn.onclick = toggleScreenAwake;
 
-  // Edit button
-  document.getElementById("editBtn").addEventListener("click", () => {
-    window.location.href = `edit-recipe.html?id=${recipeId}`;
-  });
+  // Setup edit button
+  const editBtn = document.getElementById("editBtn");
+  editBtn.onclick = () => window.location.href = `edit-recipe.html?id=${recipeId}`;
 });
 
+// Load the recipe and render
 async function loadRecipe() {
   const recipe = await FirebaseService.getRecipe(recipeId);
   if (!recipe) return alert("Recipe not found.");
 
   document.getElementById("recipeTitle").textContent = recipe.title || "";
-  document.getElementById("recipeTags").innerHTML = (recipe.tags || [])
-    .map(t => `<span class="tag-pill">${t}</span>`).join("");
+  document.getElementById("recipeTags").innerHTML =
+    (recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("");
 
-  document.getElementById("ingredientsList").innerHTML = (recipe.ingredients || [])
-    .map(ing => `<li>${ing.amount} ${ing.unit} ${ing.name}</li>`).join("");
+  document.getElementById("ingredientsList").innerHTML =
+    (recipe.ingredients || []).map(ing => `<li>${ing.amount} ${ing.unit} ${ing.name}</li>`).join("");
 
   document.getElementById("cookingTime").textContent = formatCookingTime(recipe.cookingTime);
   document.getElementById("ovenTemp").textContent = recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
   document.getElementById("servings").textContent = recipe.servings || "-";
-  document.getElementById("instructionsText").textContent = recipe.instructions || "";
+  document.getElementById("instructionsText").textContent = recipe.instructions || "-";
 
+  // Favorite button
   const favBtn = document.getElementById("favBtn");
   favBtn.classList.toggle("active", recipe.isFavorite);
   favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
-
-  favBtn.onclick = async () => {
-    const isFav = await FirebaseService.toggleFavorite(recipeId);
-    favBtn.classList.toggle("active", isFav);
-    favBtn.textContent = isFav ? "⭐" : "☆";
-  };
+  favBtn.onclick = toggleFavorite;
 }
 
+// Toggle favorite in Firebase
+async function toggleFavorite() {
+  const favBtn = document.getElementById("favBtn");
+  const newFav = await FirebaseService.toggleFavorite(recipeId);
+  favBtn.classList.toggle("active", newFav);
+  favBtn.textContent = newFav ? "⭐" : "☆";
+}
+
+// Format cooking time nicely
 function formatCookingTime(value) {
   const mins = parseInt(value, 10);
   if (isNaN(mins) || mins <= 0) return "-";
@@ -58,4 +59,16 @@ function formatCookingTime(value) {
   const hrs = Math.floor(mins / 60);
   const rem = mins % 60;
   return rem === 0 ? `${hrs} hr${hrs > 1 ? "s" : ""}` : `${hrs} hr${hrs > 1 ? "s" : ""} ${rem} mins`;
+}
+
+// Keep screen on toggle (basic simulation using alert)
+function toggleScreenAwake() {
+  screenAwake = !screenAwake;
+  const btn = document.getElementById("screenAwakeBtn");
+  btn.classList.toggle("on", screenAwake);
+  btn.textContent = screenAwake ? "Screen Awake On" : "Keep Screen On";
+
+  if (screenAwake) {
+    alert("Screen awake enabled (mobile/desktop simulation)");
+  }
 }
