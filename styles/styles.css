@@ -141,7 +141,7 @@ body {
    CARDS
 --------------------------------------------------------- */
 .quick-card {
-   display: contents;
+   display: in-line-block;
     background: var(--sage-dark);
     padding: 20px;
 }
