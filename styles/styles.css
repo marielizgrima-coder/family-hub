@@ -138,14 +138,11 @@ body {
 }
 
 /* ---------------------------------------------------------
-   CARDS
---------------------------------------------------------- */
-/* ---------------------------------------------------------
    QUICK LINKS / DASHBOARD CARDS
 --------------------------------------------------------- */
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 3fr));
     gap: 15px;
 }
 
@@ -166,7 +163,6 @@ body {
     background: var(--sage-light);
     color: var(--text);
 }
-
 
 /* ---------------------------------------------------------
    FORMS
