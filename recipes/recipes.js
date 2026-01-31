@@ -1,129 +1,96 @@
-/* ---------------------------------------------------------
-   RECIPES PAGE JS (Firebase + Filters)
---------------------------------------------------------- */
-
+// recipes.js
 document.addEventListener("DOMContentLoaded", () => {
   loadRecipes();
 });
 
-/* -------------------- FILTER STATE -------------------- */
-let activeFilters = {
-  all: true,
-  favorites: false,
-  tags: []
-};
+let activeTagFilters = [];
 
-/* -------------------- LOAD RECIPES -------------------- */
 async function loadRecipes() {
   const container = document.getElementById("recipesList");
   container.innerHTML = "";
 
-  // Get recipes and tags from Firebase
-  let recipes = await FirebaseService.getAllRecipesSorted();
+  const recipes = await FirebaseService.getAllRecipesSorted();
   const tags = await FirebaseService.getTags();
 
-  // Add filter bar only once
-  if (!document.querySelector(".filter-bar")) {
-    const filterBar = document.createElement("div");
-    filterBar.className = "filter-bar";
+  // Filter bar
+  const filterBar = document.createElement("div");
+  filterBar.className = "filter-bar";
 
-    // All button
-    const allBtn = document.createElement("button");
-    allBtn.className = "filter-btn active";
-    allBtn.textContent = "All";
-    allBtn.onclick = () => applyFilter("all");
-    filterBar.appendChild(allBtn);
+  // All button
+  const allBtn = document.createElement("button");
+  allBtn.className = "filter-btn active";
+  allBtn.textContent = "All";
+  allBtn.onclick = () => {
+    activeTagFilters = [];
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    allBtn.classList.add("active");
+    renderRecipes(recipes);
+  };
 
-    // Favorites button
-    const favBtn = document.createElement("button");
-    favBtn.className = "filter-btn";
-    favBtn.textContent = "Favorites";
-    favBtn.onclick = () => applyFilter("favorites");
-    filterBar.appendChild(favBtn);
+  // Favorites button
+  const favBtn = document.createElement("button");
+  favBtn.className = "filter-btn";
+  favBtn.textContent = "Favorites";
+  favBtn.onclick = () => {
+    activeTagFilters = ["favorites"];
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    favBtn.classList.add("active");
+    renderRecipes(recipes);
+  };
 
-    // Tag buttons
-    tags.forEach(tag => {
-      const btn = document.createElement("button");
-      btn.className = "filter-btn";
-      btn.textContent = tag;
-      btn.onclick = () => toggleTagFilter(tag, btn);
-      filterBar.appendChild(btn);
-    });
+  filterBar.append(allBtn, favBtn);
 
-    // Prepend to container
-    container.parentElement.prepend(filterBar);
-  }
-
-  filterAndRender(recipes);
-}
-
-/* -------------------- FILTER FUNCTIONS -------------------- */
-function applyFilter(type) {
-  if (type === "all") {
-    activeFilters.all = true;
-    activeFilters.favorites = false;
-    activeFilters.tags = [];
-  } else if (type === "favorites") {
-    activeFilters.all = false;
-    activeFilters.favorites = true;
-    activeFilters.tags = [];
-  }
-  updateFilterButtons();
-  filterAndRender();
-}
-
-function toggleTagFilter(tag, btn) {
-  const index = activeFilters.tags.indexOf(tag);
-  if (index > -1) {
-    activeFilters.tags.splice(index, 1);
-    btn.classList.remove("active");
-  } else {
-    activeFilters.tags.push(tag);
-    btn.classList.add("active");
-  }
-  activeFilters.all = false;
-  activeFilters.favorites = false;
-  updateFilterButtons();
-  filterAndRender();
-}
-
-function updateFilterButtons() {
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-    if (btn.textContent === "All") btn.classList.toggle("active", activeFilters.all);
-    if (btn.textContent === "Favorites") btn.classList.toggle("active", activeFilters.favorites);
+  // Tag buttons
+  tags.forEach(tag => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    btn.textContent = tag;
+    btn.onclick = () => toggleTagFilter(tag, btn, recipes);
+    filterBar.appendChild(btn);
   });
+
+  container.parentElement.prepend(filterBar);
+  renderRecipes(recipes);
 }
 
-async function filterAndRender(recipes = null) {
-  if (!recipes) recipes = await FirebaseService.getAllRecipesSorted();
-
-  let filtered = [...recipes];
-
-  if (activeFilters.favorites) {
-    filtered = filtered.filter(r => r.isFavorite);
+function toggleTagFilter(tag, btn, recipes) {
+  const index = activeTagFilters.indexOf(tag);
+  if (index === -1) {
+    activeTagFilters.push(tag);
+    btn.classList.add("active");
+  } else {
+    activeTagFilters.splice(index, 1);
+    btn.classList.remove("active");
   }
 
-  if (activeFilters.tags.length > 0) {
-    filtered = filtered.filter(r => r.tags.some(t => activeFilters.tags.includes(t)));
-  }
-
-  renderRecipes(filtered);
+  renderRecipes(recipes);
 }
 
-/* -------------------- RENDER RECIPES -------------------- */
 function renderRecipes(recipes) {
   const container = document.getElementById("recipesList");
   container.innerHTML = "";
 
-  if (recipes.length === 0) {
-    container.innerHTML = `<p>No recipes found.</p>`;
+  let filtered = recipes;
+
+  if (activeTagFilters.includes("favorites")) {
+    filtered = filtered.filter(r => r.isFavorite);
+  }
+
+  if (activeTagFilters.length > 0) {
+    const tagFilters = activeTagFilters.filter(f => f !== "favorites");
+    if (tagFilters.length > 0) {
+      filtered = filtered.filter(r => r.tags && r.tags.some(t => tagFilters.includes(t)));
+    }
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = "<p>No recipes found.</p>";
     return;
   }
 
-  recipes.forEach(recipe => {
+  filtered.forEach(recipe => {
     const card = document.createElement("div");
     card.className = "recipe-card";
-
     card.innerHTML = `
       <div class="flex-between">
         <h3 class="recipe-title">${recipe.title}</h3>
@@ -140,15 +107,13 @@ function renderRecipes(recipes) {
   });
 }
 
-/* -------------------- FAVORITE TOGGLE -------------------- */
 async function toggleFavorite(id, btn) {
   const isFav = await FirebaseService.toggleFavorite(id);
   btn.classList.toggle("active", isFav);
   btn.textContent = isFav ? "⭐" : "☆";
-  filterAndRender(); // re-render filtered list
+  loadRecipes();
 }
 
-/* -------------------- VIEW RECIPE -------------------- */
 function viewRecipe(id) {
   window.location.href = `view-recipe.html?id=${id}`;
 }
