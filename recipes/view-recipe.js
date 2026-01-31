@@ -22,12 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
    LOAD RECIPE
 --------------------------------------------------------- */
 function loadRecipe() {
-    const recipe = StorageService.getRecipe(recipeId);
-    if (!recipe) {
-        alert("Recipe not found.");
-        window.location.href = "recipes.html";
-        return;
-    }
+    async function loadRecipe() {
+     const recipe = await FirebaseService.getRecipe(recipeId); // 🔹 make this await
+     if (!recipe) {
+    alert("Recipe not found.");
+    window.location.href = "recipes.html";
+    return;
+  }
 
     // Title
     document.getElementById("recipeTitle").textContent = recipe.title || "";
