@@ -105,7 +105,7 @@ function loadRecipes() {
 
                 <button class="star-btn ${recipe.isFavorite ? "active" : ""}"
                         onclick="toggleFavorite('${recipe.id}', this)">
-                    ${recipe.isFavorite ? "⭐" : "☆"}
+                    ${recipe.isFavorite ? "★" : "☆"}
                 </button>
             </div>
 
@@ -176,7 +176,12 @@ function viewRecipe(id) {
 /* ---------------------------------------------------------
    TOGGLE FAVORITE
 --------------------------------------------------------- */
-function toggleFavorite(id) {
-    StorageService.toggleFavorite(id);
-    loadRecipes(); // keeps sorting + filters
+async function toggleFavorite(id, btn) {
+    const isFav = await FirebaseService.toggleFavorite(id);
+
+    btn.classList.toggle("active", isFav);
+    btn.textContent = isFav ? "★" : "☆";
+
+    await loadRecipes(); // refresh list
 }
+
