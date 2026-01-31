@@ -3,39 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipes</title>
+    <title>Family Hub - Recipes</title>
 
+    <!-- Styles -->
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="recipes.css">
 </head>
-
 <body class="page-recipes">
-
- <!-- Firebase SDKs -->
-<script type="module">
-  // Import the functions you need from Firebase SDK
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-  import { getFirestore, collection, doc, getDocs, getDoc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
-
-  // Your Firebase config (replace with your copied config)
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Make db globally accessible
-  window.db = db;
-  window.firebaseHelpers = { initializeApp, getFirestore, collection, doc, getDocs, getDoc, setDoc, deleteDoc, updateDoc };
-</script>
-
 
     <!-- Sidebar Toggle -->
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -53,30 +27,52 @@
         </ul>
     </div>
 
-  
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
         <header class="page-header flex-between">
             <h1>Recipes</h1>
-            <button class="small-btn mt-2" onclick="window.location.href='edit-recipe.html'">+ Add Recipe</button>
+            <button class="small-btn" onclick="window.location.href='edit-recipe.html'">+ Add Recipe</button>
         </header>
 
-            <!-- filter bar -->
-       
-        <section class="dashboard-section filter-bar">
-          <button class="filter-btn" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="fav">Favorites</button>
-          <!-- Tag buttons will be generated dynamically from stored tags -->
-          <div id="tagFilters" class="tag-filters"></div>
+        <!-- FILTER -->
+        <section class="dashboard-section">
+            <div id="filterBar" class="filter-bar">
+                <button class="filter-btn" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="fav">Favorites</button>
+                <!-- dynamic tag buttons injected here -->
+            </div>
         </section>
 
+        <!-- RECIPES GRID -->
         <section class="dashboard-section">
             <div id="recipesList" class="recipes-grid"></div>
         </section>
 
     </main>
 
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        window.db = db; // make globally accessible
+    </script>
+
+    <!-- App scripts -->
     <script src="../js/sidebar.js"></script>
     <script src="../js/storage-service.js"></script>
     <script src="recipes.js"></script>
