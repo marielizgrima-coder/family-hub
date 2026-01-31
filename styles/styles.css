@@ -43,7 +43,7 @@ body {
     height: 100vh;
     position: fixed;
     left: -240px;
-    top: 0;
+    top: 100;
     padding: 20px;
     transition: 0.3s ease;
     z-index: 1000;
