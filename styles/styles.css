@@ -312,6 +312,29 @@ button {
 }
 
 /* ---------------------------------------------------------
+   STAR / FAVOURITE BUTTON
+--------------------------------------------------------- */
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    color: var(--sage-dark);
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+/* Hover */
+.star-btn:hover {
+    transform: scale(1.15);
+}
+
+/* Active (favourited) */
+.star-btn.active {
+    color: gold;
+}
+
+/* ---------------------------------------------------------
    MOBILE
 --------------------------------------------------------- */
 @media (max-width: 700px) {
