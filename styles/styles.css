@@ -43,7 +43,7 @@ body {
     height: 100vh;
     position: fixed;
     left: -240px;
-    top: 100px;
+    top: 0px;
     padding: 20px;
     transition: 0.3s ease;
     z-index: 1000;
@@ -51,6 +51,7 @@ body {
 
 .sidebar.open {
     left: 0;
+    top:100px;
 }
 
 .sidebar h2 {
