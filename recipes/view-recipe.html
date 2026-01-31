@@ -1,81 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Recipe</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Recipe</title>
 
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="recipes.css">
+  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="stylesheet" href="recipes.css">
 </head>
-
 <body class="page-view-recipe">
 
-    <!-- Sidebar Toggle -->
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+  <!-- Sidebar Toggle -->
+  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="../index.html">Dashboard</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
-            <li><a href="#">Meal Planner</a></li>
-            <li><a href="#">Shopping List</a></li>
-            <li><a href="#">Calendar</a></li>
-            <li><a href="../settings/settings.html">Settings</a></li>
-        </ul>
-    </div>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="../index.html">Dashboard</a></li>
+      <li><a href="recipes.html">Recipes</a></li>
+      <li><a href="#">Meal Planner</a></li>
+      <li><a href="#">Shopping List</a></li>
+      <li><a href="#">Calendar</a></li>
+      <li><a href="../settings/settings.html">Settings</a></li>
+    </ul>
+  </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header flex-between">
+      <div class="flex">
+        <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
+        <button id="screenAwakeBtn" class="screen-awake-toggle ml-2">Keep Screen On</button>
+      </div>
 
-        <header class="page-header flex-between">
-            <button class="small-btn" onclick="window.location.href='recipes.html'">← Back</button>
-            <!-- Leave Screen On toggle -->
-            <button id="screenAwakeBtn" class="screen-awake-toggle">Keep Screen On</button>
+      <div class="flex">
+        <button id="favBtn" class="star-btn">☆</button>
+        <button id="editBtn" class="small-btn ml-2">Edit</button>
+      </div>
+    </header>
 
-            <div class="flex">
-                <button id="favBtn" class="star-btn">☆</button>
-                <button class="small-btn ml-2" id="editBtn">Edit</button>
-            </div>
-        </header>
-                
-        <h1 id="recipeTitle"></h1>
-                     
-        <section class="dashboard-section">
-            <h2>Tags</h2>
-            <div id="recipeTags" class="tag-container"></div>
-        </section>
+    <h1 id="recipeTitle"></h1>
 
-        <section class="dashboard-section">
-            <h2>Ingredients</h2>
-            <ul id="ingredientsList" class="ingredients-view"></ul>
-        </section>
+    <section class="dashboard-section">
+      <h2>Tags</h2>
+      <div id="recipeTags" class="tag-container"></div>
+    </section>
 
-        <section class="dashboard-section">
-            <h2>Cooking Info</h2>
-            <p><strong>Cooking Time:</strong> <span id="cookingTime"></span></p>
-            <p><strong>Oven Temp:</strong> <span id="ovenTemp"></span></p>
-            <p><strong>Servings:</strong> <span id="servings"></span></p>
-        </section>
+    <section class="dashboard-section">
+      <h2>Ingredients</h2>
+      <ul id="ingredientsList" class="ingredients-view"></ul>
+    </section>
 
-        <section class="dashboard-section">
-            <h2>Instructions</h2>
-            <p id="instructionsText"></p>
-        </section>
+    <section class="dashboard-section">
+      <h2>Cooking Info</h2>
+      <p><strong>Cooking Time:</strong> <span id="cookingTime"></span></p>
+      <p><strong>Oven Temp:</strong> <span id="ovenTemp"></span></p>
+      <p><strong>Servings:</strong> <span id="servings"></span></p>
+    </section>
 
-    </main>
+    <section class="dashboard-section">
+      <h2>Instructions</h2>
+      <p id="instructionsText"></p>
+    </section>
+  </main>
 
-    <script src="../js/sidebar.js"></script>
-    <script src="../js/storage-service.js"></script>
-    <script src="view-recipe.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<!-- Firebase App (core) SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
-<!-- Firestore SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
+  <!-- Scripts -->
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/firebase-service.js"></script>
+  <script src="view-recipe.js"></script>
 </body>
 </html>
