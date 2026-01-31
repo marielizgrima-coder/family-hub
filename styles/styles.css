@@ -140,12 +140,33 @@ body {
 /* ---------------------------------------------------------
    CARDS
 --------------------------------------------------------- */
-.quick-card {
+/* ---------------------------------------------------------
+   QUICK LINKS / DASHBOARD CARDS
+--------------------------------------------------------- */
+.quick-links {
     display: grid;
-    background: var(--sage-dark);
-    padding: 20px;
-    color: white;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
 }
+
+.quick-card {
+    background: var(--sage);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    box-shadow: var(--shadow);
+    transition: 0.2s ease;
+}
+
+.quick-card:hover {
+    background: var(--sage-light);
+    color: var(--text);
+}
+
 
 /* ---------------------------------------------------------
    FORMS
