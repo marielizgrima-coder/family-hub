@@ -1,10 +1,27 @@
-// FirebaseService.js
+// firebase-service.js
+// Make sure you include this script BEFORE any page scripts
+
+// Your Firebase config (replace with your values)
+const firebaseConfig = {
+  apiKey: "AIzaSyXXXXXX",
+  authDomain: "family-hub.firebaseapp.com",
+  projectId: "family-hub",
+  storageBucket: "family-hub.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Firebase Service
 const FirebaseService = (() => {
-  const db = firebase.firestore();
   const RECIPES_COLLECTION = "recipes";
   const TAGS_COLLECTION = "tags";
 
   return {
+    // Recipes
     async getAllRecipes() {
       const snapshot = await db.collection(RECIPES_COLLECTION).get();
       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -12,7 +29,6 @@ const FirebaseService = (() => {
 
     async getAllRecipesSorted() {
       const recipes = await this.getAllRecipes();
-      // favorites first
       return recipes.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
     },
 
@@ -42,6 +58,7 @@ const FirebaseService = (() => {
       return newFav;
     },
 
+    // Tags
     async getTags() {
       const snapshot = await db.collection(TAGS_COLLECTION).get();
       return snapshot.docs.map(doc => doc.id);
