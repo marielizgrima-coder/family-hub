@@ -124,7 +124,7 @@ function loadRecipes() {
                 `).join("")}
             </div>
 
-            <button class="small-btn mt-2" onclick="viewRecipe('${recipe.id}')">
+            <button class="small-btn" onclick="viewRecipe('${recipe.id}')">
                 View
             </button>
         `;
