@@ -27,15 +27,7 @@
         </ul>
     </div>
 
-    <!-- filter bar -->
-   
-    <section class="dashboard-section filter-bar">
-      <button class="filter-btn" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="fav">Favorites</button>
-      <!-- Tag buttons will be generated dynamically from stored tags -->
-      <div id="tagFilters" class="tag-filters"></div>
-    </section>
-   
+  
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
@@ -43,6 +35,15 @@
             <h1>Recipes</h1>
             <button class="small-btn" onclick="window.location.href='edit-recipe.html'">+ Add Recipe</button>
         </header>
+
+            <!-- filter bar -->
+       
+        <section class="dashboard-section filter-bar">
+          <button class="filter-btn" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="fav">Favorites</button>
+          <!-- Tag buttons will be generated dynamically from stored tags -->
+          <div id="tagFilters" class="tag-filters"></div>
+        </section>
 
         <section class="dashboard-section">
             <div id="recipesList" class="recipes-grid"></div>
