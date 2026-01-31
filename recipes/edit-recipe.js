@@ -49,36 +49,36 @@ function checkIfEditing() {
 /* ---------------------------------------------------------
    LOAD EXISTING RECIPE
 --------------------------------------------------------- */
-function loadRecipeData(id) {
-  const recipe = StorageService.getRecipe(id);
-  if (!recipe) return;
+async function loadRecipeData(id) {
+    const recipe = await FirebaseService.getRecipe(id); // 🔹 async
+    if (!recipe) return;
 
-  document.getElementById("recipeName").value = recipe.title || "";
+    document.getElementById("recipeName").value = recipe.title || "";
 
-  // Tags
-  (recipe.tags || []).forEach(tag => addTagPill(tag));
+    // Tags
+    (recipe.tags || []).forEach(tag => addTagPill(tag));
 
-  // Ingredients
-  (recipe.ingredients || []).forEach(ing => {
-    addIngredientRow(ing.amount, ing.unit, ing.name);
-  });
+    // Ingredients
+    (recipe.ingredients || []).forEach(ing => {
+        addIngredientRow(ing.amount, ing.unit, ing.name);
+    });
 
-  // Cooking info
-  document.getElementById("cookingTime").value = recipe.cookingTime || "";
-  document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
-  document.getElementById("servings").value = recipe.servings || "";
+    // Cooking info
+    document.getElementById("cookingTime").value = recipe.cookingTime || "";
+    document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
+    document.getElementById("servings").value = recipe.servings || "";
 
-  // Instructions
-  document.getElementById("instructions").value = recipe.instructions || "";
+    // Instructions
+    document.getElementById("instructions").value = recipe.instructions || "";
 
-  // Favourite
-  const favBtn = document.getElementById("favBtn");
-  favBtn.classList.toggle("active", recipe.isFavorite);
-  favBtn.textContent = recipe.isFavorite ? "★" : "☆";
-  favBtn.onclick = toggleFavorite;
+    // Favourite
+    const favBtn = document.getElementById("favBtn");
+    favBtn.classList.toggle("active", recipe.isFavorite);
+    favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
+    favBtn.onclick = toggleFavorite;
 
-  // Delete
-  document.getElementById("deleteBtn").onclick = deleteRecipe;
+    // Delete
+    document.getElementById("deleteBtn").onclick = deleteRecipe;
 }
 
 /* ---------------------------------------------------------
@@ -308,47 +308,42 @@ function deleteRecipe() {
 /* ---------------------------------------------------------
    SAVE RECIPE
 --------------------------------------------------------- */
-function saveRecipe() {
- document.getElementById("deleteBtn").style.display = "inline-block";
-  const title = document.getElementById("recipeName").value.trim();
-  if (!title) {
-    alert("Recipe must have a name.");
-    return;
-  }
+async function saveRecipe() {
+    const title = document.getElementById("recipeName").value.trim();
+    if (!title) {
+        alert("Recipe must have a name.");
+        return;
+    }
 
-  const tags = [...document.querySelectorAll("#tagContainer .tag-pill")].map(p => p.dataset.tag);
+    const tags = [...document.querySelectorAll("#tagContainer .tag-pill")].map(p => p.dataset.tag);
 
-   const ingredients = [...document.querySelectorAll(".ingredient-row")]
-     .map(row => {
-       const amountVal = row.querySelector(".ing-amount").value;
-       return {
-         amount: amountVal === "" ? "" : parseFloat(amountVal),
-         unit: row.querySelector(".ing-unit").value.trim(),
-         name: row.querySelector(".ing-name").value.trim()
-       };
-     })
-     .filter(ing => ing.name);
+    const ingredients = [...document.querySelectorAll(".ingredient-row")]
+      .map(row => ({
+        amount: row.querySelector(".ing-amount").value === "" ? "" : parseFloat(row.querySelector(".ing-amount").value),
+        unit: row.querySelector(".ing-unit").value.trim(),
+        name: row.querySelector(".ing-name").value.trim()
+      }))
+      .filter(ing => ing.name);
 
+    const cookingTimeVal = parseInt(document.getElementById("cookingTime").value, 10) || 0;
+    const ovenTempVal = parseInt(document.getElementById("ovenTemp").value, 10) || 0;
 
-  const cookingTimeVal = parseInt(document.getElementById("cookingTime").value, 10) || 0;
-  const ovenTempVal = parseInt(document.getElementById("ovenTemp").value, 10) || 0;
+    const recipeData = {
+        title,
+        tags,
+        ingredients,
+        cookingTime: cookingTimeVal,
+        ovenTemp: ovenTempVal,
+        servings: document.getElementById("servings").value.trim(),
+        instructions: document.getElementById("instructions").value.trim()
+    };
 
-  const recipeData = {
-    title,
-    tags,
-    ingredients,
-    cookingTime: cookingTimeVal,
-    ovenTemp: ovenTempVal,
-    servings: document.getElementById("servings").value.trim(),
-    instructions: document.getElementById("instructions").value.trim()
-  };
+    if (editingId) {
+        await FirebaseService.updateRecipe(editingId, recipeData);
+    } else {
+        const newId = await FirebaseService.addRecipe(recipeData);
+        editingId = newId;
+    }
 
-  if (editingId) {
-    StorageService.updateRecipe(editingId, recipeData);
-  } else {
-    const newId = StorageService.addRecipe(recipeData);
-    editingId = newId;
-  }
-
-  window.location.href = "recipes.html";
+    window.location.href = "recipes.html";
 }
