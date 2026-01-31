@@ -74,7 +74,7 @@ function loadRecipeData(id) {
   // Favourite
   const favBtn = document.getElementById("favBtn");
   favBtn.classList.toggle("active", recipe.isFavorite);
-  favBtn.textContent = recipe.isFavorite ? "☆" : "☆";
+  favBtn.textContent = recipe.isFavorite ? "★" : "☆";
   favBtn.onclick = toggleFavorite;
 
   // Delete
@@ -286,14 +286,14 @@ function toggleFavorite() {
     // If creating new recipe, toggle visual only until saved
     const favBtn = document.getElementById("favBtn");
     const isActive = favBtn.classList.toggle("active");
-    favBtn.textContent = isActive ? "☆" : "☆";
+    favBtn.textContent = isActive ? "★" : "☆";
     return;
   }
 
   const isFav = StorageService.toggleFavorite(editingId);
   const favBtn = document.getElementById("favBtn");
   favBtn.classList.toggle("active", isFav);
-  favBtn.textContent = isFav ? "☆" : "☆";
+  favBtn.textContent = isFav ? "★" : "☆";
 }
 
 /* ---------------------------------------------------------
