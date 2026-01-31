@@ -1,99 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Edit Recipe</title>
 
   <link rel="stylesheet" href="../styles/styles.css">
   <link rel="stylesheet" href="recipes.css">
-
-  <style>
-    /* Minimal local styles to support fraction UI, action bar and ingredient layout */
-    .ingredient-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .ingredient-row input[type="number"],
-    .ingredient-row .ing-unit,
-    .ingredient-row .ing-name {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-    }
-
-    .fraction-wrapper {
-      margin-left: 6px;
-    }
-
-    .fraction-select {
-      padding: 4px 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #fff;
-    }
-
-    .action-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 18px;
-      padding-top: 12px;
-      border-top: 1px solid #eee;
-    }
-
-    .multiplier-buttons button {
-      margin-right: 8px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #fafafa;
-    }
-
-    .save-btn {
-      background: #0b74de;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .delete-btn {
-      background: #fff;
-      color: #c0392b;
-      border: 1px solid #e6b8b5;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .star-btn {
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .tag-container .tag-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 8px;
-      border-radius: 999px;
-      background: #f0f0f0;
-      margin-right: 6px;
-      margin-bottom: 6px;
-    }
-  </style>
 </head>
 <body class="page-edit-recipe">
 
+  <!-- Sidebar Toggle -->
   <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <h2>Menu</h2>
     <ul>
@@ -112,14 +32,15 @@
       <h1 id="pageTitle">Add Recipe</h1>
     </header>
 
+    <!-- Recipe Name -->
     <section class="dashboard-section">
       <label>Recipe Name</label>
       <input id="recipeName" type="text" class="input-full" />
     </section>
 
+    <!-- Tags -->
     <section class="dashboard-section">
       <h2>Tags</h2>
-
       <div class="flex">
         <select id="existingTags" class="input-flex" onchange="addExistingTag()"></select>
       </div>
@@ -132,14 +53,13 @@
       <div id="tagContainer" class="tag-container mt-2"></div>
     </section>
 
+    <!-- Ingredients -->
     <section class="dashboard-section">
       <h2>Ingredients</h2>
-
       <div id="ingredientsContainer"></div>
 
       <div class="flex mt-2">
         <button class="small-btn" onclick="addIngredientRow()">+ Add Ingredient</button>
-
         <div class="multiplier-buttons" style="margin-left:12px;">
           <button onclick="applyMultiplier(0.5)">×0.5</button>
           <button onclick="applyMultiplier(1)">×1</button>
@@ -149,9 +69,9 @@
       </div>
     </section>
 
+    <!-- Cooking Info -->
     <section class="dashboard-section">
       <h2>Cooking Info</h2>
-
       <label>Cooking Time (minutes)</label>
       <input id="cookingTime" type="number" class="input-full" min="0" placeholder="Minutes" />
 
@@ -162,32 +82,31 @@
       <input id="servings" type="text" class="input-full" />
     </section>
 
+    <!-- Instructions -->
     <section class="dashboard-section">
       <h2>Instructions</h2>
       <textarea id="instructions" class="input-full" rows="6"></textarea>
     </section>
 
+    <!-- Actions -->
     <section class="dashboard-section mt-3">
-      <div class="action-bar">
+      <div class="action-bar flex-between">
         <div class="flex">
           <button id="favBtn" class="star-btn">☆</button>
           <button id="deleteBtn" class="delete-btn ml-2" style="display:none;">Delete</button>
         </div>
-
         <button class="save-btn" onclick="saveRecipe()">Save Recipe</button>
       </div>
     </section>
   </main>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- Scripts -->
   <script src="../js/sidebar.js"></script>
-  <script src="../js/storage-service.js"></script>
+  <script src="../js/firebase-service.js"></script>
   <script src="edit-recipe.js"></script>
-
-<!-- Firebase App (core) SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
-<!-- Firestore SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 </body>
 </html>
