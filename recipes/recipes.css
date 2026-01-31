@@ -42,26 +42,28 @@
 /* ---------------------------------------------------------
    FILTER BAR (recipes.html)
 --------------------------------------------------------- */
-.page-recipes .filter-bar {
+.filter-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 20px;
 }
 
-.page-recipes .filter-btn {
+.filter-btn {
     padding: 6px 14px;
     border-radius: 20px;
     background: #eee;
     border: none;
     cursor: pointer;
     font-size: 14px;
+    transition: 0.2s;
 }
 
-.page-recipes .filter-btn.active {
+.filter-btn.active {
     background: var(--sage);
     color: white;
 }
+
 
 /* ---------------------------------------------------------
    FORM GROUPS (edit-recipe.html)
