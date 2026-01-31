@@ -2,59 +2,136 @@
    RECIPES LIST PAGE
 --------------------------------------------------------- */
 
+let activeTags = [];
+let showFavoritesOnly = false;
+
 document.addEventListener("DOMContentLoaded", () => {
+    setupFilters();
     loadRecipes();
 });
 
 /* ---------------------------------------------------------
-   LOAD RECIPES
+   FILTER BAR SETUP
 --------------------------------------------------------- */
-function loadRecipes() {
-  const container = document.getElementById("recipesList");
-  container.innerHTML = "";
+function setupFilters() {
+    const tagContainer = document.getElementById("tagFilters");
+    tagContainer.innerHTML = "";
 
-  const recipes = StorageService.getAllRecipesSorted();
-
-  if (!recipes.length) {
-    container.innerHTML = `<p>No recipes yet. Add one!</p>`;
-    return;
-  }
-
-  recipes.forEach(recipe => {
-    const card = document.createElement("div");
-    card.className = "recipe-card";
-
-    card.innerHTML = `
-      <div class="flex-between">
-        <h3 class="recipe-title">${recipe.title}</h3>
-        <button class="star-btn ${recipe.isFavorite ? "active" : ""}">
-          ${recipe.isFavorite ? "⭐" : "☆"}
-        </button>
-      </div>
-
-      <div class="recipe-tags">
-        ${(recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("")}
-      </div>
-
-      <button class="small-btn mt-2 view-btn">View</button>
-    `;
-
-    const favBtn = card.querySelector(".star-btn");
-    favBtn.addEventListener("click", () => {
-      const isFav = StorageService.toggleFavorite(recipe.id);
-      favBtn.classList.toggle("active", isFav);
-      favBtn.textContent = isFav ? "⭐" : "☆";
-      loadRecipes();
+    // ALL button
+    document.querySelector("[data-filter='all']").addEventListener("click", () => {
+        resetFilters();
+        loadRecipes();
     });
 
-    card.querySelector(".view-btn").addEventListener("click", () => {
-      window.location.href = `view-recipe.html?id=${recipe.id}`;
+    // FAVORITES button
+    document.querySelector("[data-filter='fav']").addEventListener("click", (e) => {
+        e.target.classList.toggle("active");
+        showFavoritesOnly = e.target.classList.contains("active");
+
+        // Deselect ALL
+        document.querySelector("[data-filter='all']").classList.remove("active");
+
+        loadRecipes();
     });
 
-    container.appendChild(card);
-  });
+    // TAG BUTTONS (dynamic)
+    const tags = StorageService.getTags();
+
+    tags.forEach(tag => {
+        const btn = document.createElement("button");
+        btn.className = "filter-btn";
+        btn.textContent = tag;
+
+        btn.addEventListener("click", () => {
+            btn.classList.toggle("active");
+
+            if (btn.classList.contains("active")) {
+                activeTags.push(tag);
+            } else {
+                activeTags = activeTags.filter(t => t !== tag);
+            }
+
+            // Deselect ALL when tags are used
+            document.querySelector("[data-filter='all']").classList.remove("active");
+
+            loadRecipes();
+        });
+
+        tagContainer.appendChild(btn);
+    });
+
+    // Default to ALL active
+    document.querySelector("[data-filter='all']").classList.add("active");
 }
 
+/* ---------------------------------------------------------
+   RESET FILTERS
+--------------------------------------------------------- */
+function resetFilters() {
+    activeTags = [];
+    showFavoritesOnly = false;
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    document.querySelector("[data-filter='all']").classList.add("active");
+}
+
+/* ---------------------------------------------------------
+   LOAD & FILTER RECIPES
+--------------------------------------------------------- */
+function loadRecipes() {
+    const container = document.getElementById("recipesList");
+    container.innerHTML = "";
+
+    let recipes = StorageService.getAllRecipesSorted();
+
+    // Favorites filter
+    if (showFavoritesOnly) {
+        recipes = recipes.filter(r => r.isFavorite);
+    }
+
+    // Tag filtering (must include ALL selected tags)
+    if (activeTags.length > 0) {
+        recipes = recipes.filter(recipe =>
+            activeTags.every(tag => recipe.tags?.includes(tag))
+        );
+    }
+
+    if (recipes.length === 0) {
+        container.innerHTML = `<p>No recipes match your filters.</p>`;
+        return;
+    }
+
+    recipes.forEach(recipe => {
+        const card = document.createElement("div");
+        card.classList.add("recipe-card");
+
+        card.innerHTML = `
+            <div class="flex-between">
+                <h3 class="recipe-title">${recipe.title}</h3>
+
+                <button class="star-btn ${recipe.isFavorite ? "active" : ""}"
+                        onclick="toggleFavorite('${recipe.id}', this)">
+                    ${recipe.isFavorite ? "⭐" : "☆"}
+                </button>
+            </div>
+
+            <div class="recipe-tags">
+                ${(recipe.tags || []).map(tag => `
+                    <span class="tag-pill">${tag}</span>
+                `).join("")}
+            </div>
+
+            <button class="small-btn mt-2" onclick="viewRecipe('${recipe.id}')">
+                View
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
 
 /* ---------------------------------------------------------
    VIEW RECIPE
@@ -64,120 +141,9 @@ function viewRecipe(id) {
 }
 
 /* ---------------------------------------------------------
-   TOGGLE FAVOURITE
+   TOGGLE FAVORITE
 --------------------------------------------------------- */
-function toggleFavorite(id, btn) {
-    const isFav = StorageService.toggleFavorite(id);
-
-    btn.classList.toggle("active", isFav);
-    btn.textContent = isFav ? "⭐" : "☆";
-
-    loadRecipes(); // refresh sorting
-
-   document.addEventListener("DOMContentLoaded", () => {
-    loadRecipes();
-    setupFilters();
-});
-   
-/* ---------------------------------------------------------
-   FILTERS SETUP
---------------------------------------------------------- */
-function setupFilters() {
-    const tagContainer = document.getElementById("tagFilters");
-    tagContainer.innerHTML = "";
-
-    const tags = StorageService.getTags();
-    tags.forEach(tag => {
-        const btn = document.createElement("button");
-        btn.classList.add("filter-btn");
-        btn.textContent = tag;
-        btn.dataset.tag = tag;
-        btn.addEventListener("click", () => toggleTagFilter(btn));
-        tagContainer.appendChild(btn);
-    });
-
-    document.querySelector(".filter-btn[data-filter='all']").addEventListener("click", () => {
-        clearFilters();
-        applyFilters();
-    });
-
-    document.querySelector(".filter-btn[data-filter='fav']").addEventListener("click", (e) => {
-        // Toggle favorite button
-        e.target.classList.toggle("active");
-        // Clicking Fav deselects All
-        document.querySelector(".filter-btn[data-filter='all']").classList.remove("active");
-        applyFilters();
-    });
+function toggleFavorite(id) {
+    StorageService.toggleFavorite(id);
+    loadRecipes(); // keeps sorting + filters
 }
-
-/* Toggle individual tag */
-function toggleTagFilter(btn) {
-    btn.classList.toggle("active");
-    // Clicking tag deselects All
-    document.querySelector(".filter-btn[data-filter='all']").classList.remove("active");
-    applyFilters();
-}
-
-/* Clear all filters */
-function clearFilters() {
-    document.querySelectorAll(".filter-btn").forEach(btn => {
-        if (!btn.dataset.filter) btn.classList.remove("active");
-    });
-    document.querySelector(".filter-btn[data-filter='fav']").classList.remove("active");
-}
-
-/* Apply active filters to recipes */
-function applyFilters() {
-    const allBtn = document.querySelector(".filter-btn[data-filter='all']");
-    const favBtn = document.querySelector(".filter-btn[data-filter='fav']");
-    const activeTags = [...document.querySelectorAll("#tagFilters .filter-btn.active")].map(b => b.dataset.tag);
-
-    const recipes = StorageService.getAllRecipesSorted();
-    const container = document.getElementById("recipesList");
-    container.innerHTML = "";
-
-    let filtered = recipes;
-
-    // Apply Favorites filter
-    if (favBtn.classList.contains("active")) {
-        filtered = filtered.filter(r => r.isFavorite);
-    }
-
-    // Apply tags filter
-    if (activeTags.length > 0) {
-        filtered = filtered.filter(r => r.tags && activeTags.every(t => r.tags.includes(t)));
-    }
-
-    // If All is active or no filters, show everything
-    if (allBtn.classList.contains("active") || (!favBtn.classList.contains("active") && activeTags.length === 0)) {
-        filtered = recipes;
-        document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-        allBtn.classList.add("active");
-    }
-
-    // Render filtered recipes
-    if (filtered.length === 0) {
-        container.innerHTML = `<p>No recipes match your filters.</p>`;
-        return;
-    }
-
-    filtered.forEach(recipe => {
-        const card = document.createElement("div");
-        card.classList.add("recipe-card");
-        card.innerHTML = `
-            <div class="flex-between">
-                <h3 class="recipe-title">${recipe.title}</h3>
-                <button class="star-btn ${recipe.isFavorite ? "active" : ""}"
-                        onclick="toggleFavorite('${recipe.id}', this)">
-                    ${recipe.isFavorite ? "⭐" : "☆"}
-                </button>
-            </div>
-            <div class="recipe-tags">
-                ${(recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("")}
-            </div>
-            <button class="small-btn mt-2" onclick="viewRecipe('${recipe.id}')">View</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
