@@ -51,7 +51,6 @@ body {
 
 .sidebar.open {
     left: 0;
-    top:100px;
 }
 
 .sidebar h2 {
