@@ -317,7 +317,7 @@ button {
 .star-btn {
     background: none;
     border: none;
-    font-size: 22px;
+    font-size: 40px;
     cursor: pointer;
     line-height: 1;
     color: var(--sage-dark);
@@ -326,7 +326,7 @@ button {
 
 /* Hover */
 .star-btn:hover {
-    transform: scale(1.15);
+    transform: scale(1);
 }
 
 /* Active (favourited) */
