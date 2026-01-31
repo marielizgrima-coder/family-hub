@@ -85,7 +85,40 @@ function loadRecipes() {
     const container = document.getElementById("recipesList");
     container.innerHTML = "";
 
-    let recipes = StorageService.getAllRecipesSorted();
+    async function loadRecipes() {
+    const container = document.getElementById("recipesList");
+    container.innerHTML = "";
+
+    const recipes = await FirebaseService.getAllRecipesSorted(); // 🔹 async
+
+    if (recipes.length === 0) {
+        container.innerHTML = `<p>No recipes yet. Add one!</p>`;
+        return;
+    }
+
+    recipes.forEach(recipe => {
+        const card = document.createElement("div");
+        card.classList.add("recipe-card");
+        card.innerHTML = `
+            <div class="flex-between">
+                <h3 class="recipe-title">${recipe.title}</h3>
+
+                <button class="star-btn ${recipe.isFavorite ? "active" : ""}"
+                        onclick="toggleFavorite('${recipe.id}', this)">
+                    ${recipe.isFavorite ? "⭐" : "☆"}
+                </button>
+            </div>
+
+            <div class="recipe-tags">
+                ${(recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("")}
+            </div>
+
+            <button class="small-btn mt-2" onclick="viewRecipe('${recipe.id}')">View</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
 
     // Favorites filter
     if (showFavoritesOnly) {
