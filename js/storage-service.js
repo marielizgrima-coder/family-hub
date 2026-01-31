@@ -17,9 +17,39 @@ const StorageService = (() => {
         }
     }
 
-    function _save(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-    }
+   const StorageService = {
+     async getAllRecipes() {
+       const snapshot = await db.collection('recipes').get();
+       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+     },
+   
+     async getRecipe(id) {
+       const docRef = db.collection('recipes').doc(id);
+       const docSnap = await docRef.get();
+       return docSnap.exists ? { id: docSnap.id, ...docSnap.data() } : null;
+     },
+   
+     async addRecipe(recipe) {
+       const docRef = await db.collection('recipes').add(recipe);
+       return docRef.id;
+     },
+   
+     async updateRecipe(id, recipe) {
+       await db.collection('recipes').doc(id).set(recipe, { merge: true });
+     },
+   
+     async deleteRecipe(id) {
+       await db.collection('recipes').doc(id).delete();
+     },
+   
+     async toggleFavorite(id) {
+       const recipe = await this.getRecipe(id);
+       if (!recipe) return false;
+       const newFav = !recipe.isFavorite;
+       await this.updateRecipe(id, { isFavorite: newFav });
+       return newFav;
+     }
+   };
 
     function _generateId() {
         return Date.now().toString();
