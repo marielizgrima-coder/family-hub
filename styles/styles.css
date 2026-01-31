@@ -141,9 +141,10 @@ body {
    CARDS
 --------------------------------------------------------- */
 .quick-card {
-   display: flex;
+    display: flex;
     background: var(--sage-dark);
     padding: 20px;
+    color: white;
 }
 
 /* ---------------------------------------------------------
