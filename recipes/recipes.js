@@ -4,7 +4,6 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRecipes();
-    setupFilters();
 });
 
 /* ---------------------------------------------------------
@@ -74,6 +73,12 @@ function toggleFavorite(id, btn) {
     btn.textContent = isFav ? "⭐" : "☆";
 
     loadRecipes(); // refresh sorting
+
+   document.addEventListener("DOMContentLoaded", () => {
+    loadRecipes();
+    setupFilters();
+});
+   
 /* ---------------------------------------------------------
    FILTERS SETUP
 --------------------------------------------------------- */
