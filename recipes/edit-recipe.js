@@ -12,7 +12,7 @@ async function loadExistingTags() {
   if (!select) return;
 
   select.innerHTML = `<option value="">Select tag</option>`;
-  const tags = await FirebaseService.getTags();
+  const tags = await firebase-service.getTags();
 
   tags.forEach(tag => {
     const opt = document.createElement("option");
@@ -33,7 +33,7 @@ async function addNewTag() {
   const tag = input.value.trim();
   if (!tag) return;
 
-  await FirebaseService.addTag(tag);
+  await firebase-service.addTag(tag);
   addTagPill(tag);
   input.value = "";
   loadExistingTags();
@@ -60,7 +60,7 @@ function checkIfEditing() {
 }
 
 async function loadRecipeData(id) {
-  const recipe = await FirebaseService.getRecipe(id);
+  const recipe = await firebase-service.getRecipe(id);
   if (!recipe) return;
 
   document.getElementById("pageTitle").textContent = "Edit Recipe";
@@ -119,9 +119,9 @@ async function saveRecipe() {
   };
 
   if (editingId) {
-    await FirebaseService.updateRecipe(editingId, data);
+    await firebase-service.updateRecipe(editingId, data);
   } else {
-    await FirebaseService.addRecipe(data);
+    await firebase-service.addRecipe(data);
   }
 
   window.location.href = "recipes.html";
