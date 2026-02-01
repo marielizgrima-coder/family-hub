@@ -14,7 +14,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const FirebaseService = (() => {
+const firebase-service = (() => {
   const RECIPES = "recipes";
   const TAGS = "tags";
 
