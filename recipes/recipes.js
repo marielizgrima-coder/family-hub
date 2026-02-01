@@ -9,8 +9,8 @@ async function loadRecipes() {
   const container = document.getElementById("recipesList");
   container.innerHTML = "";
 
-  const recipes = await FirebaseService.getAllRecipesSorted();
-  const tags = await FirebaseService.getTags();
+  const recipes = await firebase-service.getAllRecipesSorted();
+  const tags = await firebase-service.getTags();
 
   // Filter bar
   const filterBar = document.createElement("div");
@@ -108,7 +108,7 @@ function renderRecipes(recipes) {
 }
 
 async function toggleFavorite(id, btn) {
-  const isFav = await FirebaseService.toggleFavorite(id);
+  const isFav = await firebase-service.toggleFavorite(id);
   btn.classList.toggle("active", isFav);
   btn.textContent = isFav ? "⭐" : "☆";
   loadRecipes();
