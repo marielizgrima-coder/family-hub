@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Load the recipe and render
 async function loadRecipe() {
-  const recipe = await FirebaseService.getRecipe(recipeId);
+  const recipe = await firebase-service.getRecipe(recipeId);
   if (!recipe) return alert("Recipe not found.");
 
   document.getElementById("recipeTitle").textContent = recipe.title || "";
@@ -46,7 +46,7 @@ async function loadRecipe() {
 // Toggle favorite in Firebase
 async function toggleFavorite() {
   const favBtn = document.getElementById("favBtn");
-  const newFav = await FirebaseService.toggleFavorite(recipeId);
+  const newFav = await firebase-service.toggleFavorite(recipeId);
   favBtn.classList.toggle("active", newFav);
   favBtn.textContent = newFav ? "⭐" : "☆";
 }
