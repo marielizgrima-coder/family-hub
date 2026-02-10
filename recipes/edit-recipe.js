@@ -22,32 +22,46 @@ async function loadExistingTags() {
   });
 }
 
-async function addExistingTag() {
+function addExistingTag() {
   const select = document.getElementById("existingTags");
+  if (!select) return;
+
   if (select.value) addTagPill(select.value);
   select.value = "";
 }
 
 async function addNewTag() {
   const input = document.getElementById("newTagInput");
+  if (!input) return;
+
   const tag = input.value.trim();
   if (!tag) return;
 
   await FirebaseService.addTag(tag);
   addTagPill(tag);
+
   input.value = "";
   loadExistingTags();
 }
 
 function addTagPill(tag) {
   const container = document.getElementById("tagContainer");
+  if (!container) return;
+
   if ([...container.children].some(p => p.dataset.tag === tag)) return;
 
   const pill = document.createElement("span");
   pill.className = "tag-pill";
   pill.dataset.tag = tag;
-  pill.innerHTML = `${tag} <span class="remove-tag">×</span>`;
-  pill.querySelector(".remove-tag").onclick = () => pill.remove();
+
+  const removeBtn = document.createElement("span");
+  removeBtn.className = "remove-tag";
+  removeBtn.textContent = "×";
+  removeBtn.onclick = () => pill.remove();
+
+  pill.append(tag + " ");
+  pill.appendChild(removeBtn);
+
   container.appendChild(pill);
 }
 
@@ -56,6 +70,7 @@ function addTagPill(tag) {
 function checkIfEditing() {
   const params = new URLSearchParams(window.location.search);
   editingId = params.get("id");
+
   if (editingId) loadRecipeData(editingId);
 }
 
@@ -67,18 +82,35 @@ async function loadRecipeData(id) {
   document.getElementById("recipeName").value = recipe.title || "";
 
   (recipe.tags || []).forEach(addTagPill);
-  (recipe.ingredients || []).forEach(i => addIngredientRow(i.amount, i.unit, i.name));
+  (recipe.ingredients || []).forEach(i =>
+    addIngredientRow(i.amount, i.unit, i.name)
+  );
 
   document.getElementById("cookingTime").value = recipe.cookingTime || "";
   document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
   document.getElementById("servings").value = recipe.servings || "";
   document.getElementById("instructions").value = recipe.instructions || "";
 
+  // Favorite toggle
+  const favBtn = document.getElementById("favBtn");
+  if (favBtn) {
+    favBtn.classList.toggle("active", recipe.isFavorite);
+    favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
+
+    favBtn.onclick = async () => {
+      const newFav = await FirebaseService.toggleFavorite(id);
+      favBtn.classList.toggle("active", newFav);
+      favBtn.textContent = newFav ? "⭐" : "☆";
+    };
+  }
+
+  // Delete button
   const deleteBtn = document.getElementById("deleteBtn");
   if (deleteBtn) {
     deleteBtn.style.display = "";
     deleteBtn.onclick = async () => {
       if (!confirm("Delete this recipe?")) return;
+
       try {
         await FirebaseService.deleteRecipe(id);
         window.location.href = "recipes.html";
@@ -94,22 +126,49 @@ async function loadRecipeData(id) {
 
 function addIngredientRow(amount = "", unit = "", name = "") {
   const container = document.getElementById("ingredientsContainer");
+  if (!container) return;
+
   const row = document.createElement("div");
   row.className = "ingredient-row";
 
-  const safeAmount = amount === "" ? "" : amount;
-  const safeUnit = (unit || "").replace(/"/g, "&quot;");
-  const safeName = (name || "").replace(/"/g, "&quot;");
+  const amountInput = document.createElement("input");
+  amountInput.type = "number";
+  amountInput.className = "ing-amount";
+  amountInput.value = amount === "" ? "" : amount;
 
-  row.innerHTML = `
-    <input type="number" class="ing-amount" value="${safeAmount}">
-    <input class="ing-unit" value="${safeUnit}">
-    <input class="ing-name" value="${safeName}">
-    <button class="delete-ingredient">×</button>
-  `;
+  const unitInput = document.createElement("input");
+  unitInput.className = "ing-unit";
+  unitInput.value = unit || "";
 
-  row.querySelector(".delete-ingredient").onclick = () => row.remove();
+  const nameInput = document.createElement("input");
+  nameInput.className = "ing-name";
+  nameInput.value = name || "";
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "delete-ingredient";
+  deleteBtn.textContent = "×";
+  deleteBtn.onclick = () => row.remove();
+
+  row.appendChild(amountInput);
+  row.appendChild(unitInput);
+  row.appendChild(nameInput);
+  row.appendChild(deleteBtn);
+
   container.appendChild(row);
+}
+
+/* ---------- MULTIPLIER ---------- */
+
+function applyMultiplier(multiplier) {
+  document.querySelectorAll(".ingredient-row").forEach(row => {
+    const amountEl = row.querySelector(".ing-amount");
+    if (!amountEl) return;
+
+    const val = parseFloat(amountEl.value);
+    if (isNaN(val)) return;
+
+    amountEl.value = (val * multiplier).toFixed(2).replace(/\.00$/, "");
+  });
 }
 
 /* ---------- SAVE ---------- */
@@ -127,11 +186,15 @@ async function saveRecipe() {
   }
 
   try {
-    const tags = [...document.querySelectorAll(".tag-pill")].map(p => p.dataset.tag);
+    const tags = [...document.querySelectorAll(".tag-pill")].map(
+      p => p.dataset.tag
+    );
+
     const ingredients = [...document.querySelectorAll(".ingredient-row")]
       .map(r => {
         const amountVal = r.querySelector(".ing-amount").value;
         const amount = amountVal === "" ? "" : parseFloat(amountVal);
+
         return {
           amount: Number.isNaN(amount) ? "" : amount,
           unit: r.querySelector(".ing-unit").value.trim(),
@@ -142,8 +205,10 @@ async function saveRecipe() {
 
     const cookingTimeRaw = document.getElementById("cookingTime").value;
     const cookingTime = cookingTimeRaw === "" ? "" : parseInt(cookingTimeRaw, 10);
+
     const ovenTempRaw = document.getElementById("ovenTemp").value;
     const ovenTemp = ovenTempRaw === "" ? "" : parseInt(ovenTempRaw, 10);
+
     const servings = document.getElementById("servings").value;
 
     const data = {
