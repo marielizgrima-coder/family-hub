@@ -1,6 +1,5 @@
 // firebase-service.js
 
-// 🔥 Firebase config (ONLY PLACE IT EXISTS)
 const firebaseConfig = {
   apiKey: "AIzaSyXXXXXX",
   authDomain: "family-hub.firebaseapp.com",
@@ -11,7 +10,10 @@ const firebaseConfig = {
 };
 
 // Init Firebase ONCE
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const db = firebase.firestore();
 
 const FirebaseService = (() => {
@@ -54,6 +56,7 @@ const FirebaseService = (() => {
     async toggleFavorite(id) {
       const recipe = await this.getRecipe(id);
       if (!recipe) return false;
+
       const next = !recipe.isFavorite;
       await this.updateRecipe(id, { isFavorite: next });
       return next;
@@ -66,6 +69,7 @@ const FirebaseService = (() => {
 
     async addTag(tag) {
       if (!tag) return;
+
       await db.collection(TAGS).doc(tag).set({
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
