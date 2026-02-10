@@ -1,74 +1,160 @@
 // view-recipe.js
 let recipeId = null;
-let screenAwake = false;
+let wakeLock = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   recipeId = params.get("id");
 
-  if (!recipeId) return alert("Recipe not found.");
+  if (!recipeId) {
+    alert("Recipe not found.");
+    window.location.href = "recipes.html";
+    return;
+  }
 
   await loadRecipe();
 
-  // Setup screen awake toggle
+  // Screen awake toggle
   const screenBtn = document.getElementById("screenAwakeBtn");
-  screenBtn.onclick = toggleScreenAwake;
+  if (screenBtn) {
+    screenBtn.onclick = toggleScreenAwake;
+  }
 
-  // Setup edit button
+  // Edit button
   const editBtn = document.getElementById("editBtn");
-  editBtn.onclick = () => window.location.href = `edit-recipe.html?id=${recipeId}`;
+  if (editBtn) {
+    editBtn.onclick = () => {
+      window.location.href = `edit-recipe.html?id=${recipeId}`;
+    };
+  }
 });
 
 // Load the recipe and render
 async function loadRecipe() {
   const recipe = await FirebaseService.getRecipe(recipeId);
-  if (!recipe) return alert("Recipe not found.");
 
-  document.getElementById("recipeTitle").textContent = recipe.title || "";
-  document.getElementById("recipeTags").innerHTML =
-    (recipe.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join("");
+  if (!recipe) {
+    alert("Recipe not found.");
+    window.location.href = "recipes.html";
+    return;
+  }
 
-  document.getElementById("ingredientsList").innerHTML =
-    (recipe.ingredients || []).map(ing => `<li>${ing.amount} ${ing.unit} ${ing.name}</li>`).join("");
+  // Title
+  const titleEl = document.getElementById("recipeTitle");
+  if (titleEl) titleEl.textContent = recipe.title || "";
 
-  document.getElementById("cookingTime").textContent = formatCookingTime(recipe.cookingTime);
-  document.getElementById("ovenTemp").textContent = recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
-  document.getElementById("servings").textContent = recipe.servings || "-";
-  document.getElementById("instructionsText").textContent = recipe.instructions || "-";
+  // Tags
+  const tagsContainer = document.getElementById("recipeTags");
+  if (tagsContainer) {
+    tagsContainer.innerHTML = "";
+
+    (recipe.tags || []).forEach(tag => {
+      const pill = document.createElement("span");
+      pill.className = "tag-pill";
+      pill.textContent = tag;
+      tagsContainer.appendChild(pill);
+    });
+  }
+
+  // Ingredients
+  const ingList = document.getElementById("ingredientsList");
+  if (ingList) {
+    ingList.innerHTML = "";
+
+    (recipe.ingredients || []).forEach(ing => {
+      const li = document.createElement("li");
+
+      const amount = ing.amount !== "" && ing.amount !== null && ing.amount !== undefined
+        ? ing.amount
+        : "";
+
+      const unit = ing.unit ? ing.unit.trim() : "";
+      const name = ing.name ? ing.name.trim() : "";
+
+      let text = `${amount} ${unit} ${name}`.trim().replace(/\s+/g, " ");
+      if (!text) text = "-";
+
+      li.textContent = text;
+      ingList.appendChild(li);
+    });
+  }
+
+  // Cooking info
+  const cookingTimeEl = document.getElementById("cookingTime");
+  if (cookingTimeEl) cookingTimeEl.textContent = formatCookingTime(recipe.cookingTime);
+
+  const ovenTempEl = document.getElementById("ovenTemp");
+  if (ovenTempEl) ovenTempEl.textContent = recipe.ovenTemp ? `${recipe.ovenTemp}°C` : "-";
+
+  const servingsEl = document.getElementById("servings");
+  if (servingsEl) servingsEl.textContent = recipe.servings || "-";
+
+  const instructionsEl = document.getElementById("instructionsText");
+  if (instructionsEl) instructionsEl.textContent = recipe.instructions || "-";
 
   // Favorite button
   const favBtn = document.getElementById("favBtn");
-  favBtn.classList.toggle("active", recipe.isFavorite);
-  favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
-  favBtn.onclick = toggleFavorite;
-}
+  if (favBtn) {
+    favBtn.classList.toggle("active", recipe.isFavorite);
+    favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
 
-// Toggle favorite in Firebase
-async function toggleFavorite() {
-  const favBtn = document.getElementById("favBtn");
-  const newFav = await FirebaseService.toggleFavorite(recipeId);
-  favBtn.classList.toggle("active", newFav);
-  favBtn.textContent = newFav ? "⭐" : "☆";
+    favBtn.onclick = async () => {
+      const newFav = await FirebaseService.toggleFavorite(recipeId);
+      favBtn.classList.toggle("active", newFav);
+      favBtn.textContent = newFav ? "⭐" : "☆";
+    };
+  }
 }
 
 // Format cooking time nicely
 function formatCookingTime(value) {
   const mins = parseInt(value, 10);
+
   if (isNaN(mins) || mins <= 0) return "-";
   if (mins < 60) return `${mins} mins`;
+
   const hrs = Math.floor(mins / 60);
   const rem = mins % 60;
-  return rem === 0 ? `${hrs} hr${hrs > 1 ? "s" : ""}` : `${hrs} hr${hrs > 1 ? "s" : ""} ${rem} mins`;
+
+  if (rem === 0) return `${hrs} hr${hrs > 1 ? "s" : ""}`;
+  return `${hrs} hr${hrs > 1 ? "s" : ""} ${rem} mins`;
 }
 
-// Keep screen on toggle (basic simulation using alert)
-function toggleScreenAwake() {
-  screenAwake = !screenAwake;
+// Keep screen on toggle (real Wake Lock API)
+async function toggleScreenAwake() {
   const btn = document.getElementById("screenAwakeBtn");
-  btn.classList.toggle("on", screenAwake);
-  btn.textContent = screenAwake ? "Screen Awake On" : "Keep Screen On";
+  if (!btn) return;
 
-  if (screenAwake) {
-    alert("Screen awake enabled (mobile/desktop simulation)");
+  // If already active -> turn off
+  if (wakeLock) {
+    await wakeLock.release();
+    wakeLock = null;
+
+    btn.classList.remove("on");
+    btn.textContent = "Keep Screen On";
+    return;
+  }
+
+  // Try enabling
+  try {
+    if (!("wakeLock" in navigator)) {
+      alert("Wake Lock not supported in this browser.");
+      return;
+    }
+
+    wakeLock = await navigator.wakeLock.request("screen");
+
+    btn.classList.add("on");
+    btn.textContent = "Screen Awake On";
+
+    wakeLock.addEventListener("release", () => {
+      wakeLock = null;
+      btn.classList.remove("on");
+      btn.textContent = "Keep Screen On";
+    });
+
+  } catch (err) {
+    console.error("Wake Lock error:", err);
+    alert("Could not keep screen awake.");
   }
 }
