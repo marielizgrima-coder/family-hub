@@ -46,7 +46,7 @@ function addTagPill(tag) {
   const pill = document.createElement("span");
   pill.className = "tag-pill";
   pill.dataset.tag = tag;
-  pill.innerHTML = `${tag} <span class=\"remove-tag\">×</span>`;
+  pill.innerHTML = `${tag} <span class="remove-tag">×</span>`;
   pill.querySelector(".remove-tag").onclick = () => pill.remove();
   container.appendChild(pill);
 }
@@ -73,6 +73,21 @@ async function loadRecipeData(id) {
   document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
   document.getElementById("servings").value = recipe.servings || "";
   document.getElementById("instructions").value = recipe.instructions || "";
+
+  const deleteBtn = document.getElementById("deleteBtn");
+  if (deleteBtn) {
+    deleteBtn.style.display = "";
+    deleteBtn.onclick = async () => {
+      if (!confirm("Delete this recipe?")) return;
+      try {
+        await FirebaseService.deleteRecipe(id);
+        window.location.href = "recipes.html";
+      } catch (err) {
+        console.error("Delete failed:", err);
+        alert("Failed to delete recipe. See console for details.");
+      }
+    };
+  }
 }
 
 /* ---------- INGREDIENTS ---------- */
@@ -82,10 +97,14 @@ function addIngredientRow(amount = "", unit = "", name = "") {
   const row = document.createElement("div");
   row.className = "ingredient-row";
 
+  const safeAmount = amount === "" ? "" : amount;
+  const safeUnit = (unit || "").replace(/"/g, "&quot;");
+  const safeName = (name || "").replace(/"/g, "&quot;");
+
   row.innerHTML = `
-    <input type="number" class="ing-amount" value="${amount}">
-    <input class="ing-unit" value="${unit}">
-    <input class="ing-name" value="${name}">
+    <input type="number" class="ing-amount" value="${safeAmount}">
+    <input class="ing-unit" value="${safeUnit}">
+    <input class="ing-name" value="${safeName}">
     <button class="delete-ingredient">×</button>
   `;
 
@@ -96,52 +115,63 @@ function addIngredientRow(amount = "", unit = "", name = "") {
 /* ---------- SAVE ---------- */
 
 async function saveRecipe() {
-  const title = document.getElementById("recipeName").value.trim();
+  const titleEl = document.getElementById("recipeName");
+  const saveBtn = document.querySelector(".save-btn");
+
+  const title = titleEl ? titleEl.value.trim() : "";
   if (!title) return alert("Recipe needs a name");
 
-  const tags = [...document.querySelectorAll(".tag-pill")].map(p => p.dataset.tag);
-  const ingredients = [...document.querySelectorAll(".ingredient-row")]
-    .map(r => ({
-      amount: parseFloat(r.querySelector(".ing-amount").value) || "",
-      unit: r.querySelector(".ing-unit").value.trim(),
-      name: r.querySelector(".ing-name").value.trim()
-    }))
-    .filter(i => i.name);
-
-  const data = {
-    title,
-    tags,
-    ingredients,
-    cookingTime: document.getElementById("cookingTime").value,
-    ovenTemp: document.getElementById("ovenTemp").value,
-    servings: document.getElementById("servings").value,
-    instructions: document.getElementById("instructions").value
-  };
-
-  const saveBtn = document.querySelector(".save-btn");
-  const originalText = saveBtn.textContent;
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Saving...";
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+  }
 
   try {
+    const tags = [...document.querySelectorAll(".tag-pill")].map(p => p.dataset.tag);
+    const ingredients = [...document.querySelectorAll(".ingredient-row")]
+      .map(r => {
+        const amountVal = r.querySelector(".ing-amount").value;
+        const amount = amountVal === "" ? "" : parseFloat(amountVal);
+        return {
+          amount: Number.isNaN(amount) ? "" : amount,
+          unit: r.querySelector(".ing-unit").value.trim(),
+          name: r.querySelector(".ing-name").value.trim()
+        };
+      })
+      .filter(i => i.name);
+
+    const cookingTimeRaw = document.getElementById("cookingTime").value;
+    const cookingTime = cookingTimeRaw === "" ? "" : parseInt(cookingTimeRaw, 10);
+    const ovenTempRaw = document.getElementById("ovenTemp").value;
+    const ovenTemp = ovenTempRaw === "" ? "" : parseInt(ovenTempRaw, 10);
+    const servings = document.getElementById("servings").value;
+
+    const data = {
+      title,
+      tags,
+      ingredients,
+      cookingTime: Number.isNaN(cookingTime) ? "" : cookingTime,
+      ovenTemp: Number.isNaN(ovenTemp) ? "" : ovenTemp,
+      servings,
+      instructions: document.getElementById("instructions").value
+    };
+
     if (editingId) {
       await FirebaseService.updateRecipe(editingId, data);
-      console.log("Recipe updated successfully:", editingId);
+      console.log("Recipe updated:", editingId, data);
     } else {
       const newId = await FirebaseService.addRecipe(data);
-      console.log("Recipe added successfully:", newId);
+      console.log("Recipe added:", newId, data);
     }
-    
-    alert("Recipe saved successfully!");
+
     window.location.href = "recipes.html";
-  } catch (error) {
-    console.error("Error saving recipe:", error);
-    alert("Failed to save recipe. Please check the console for details.");
-    saveBtn.disabled = false;
-    saveBtn.textContent = originalText;
+  } catch (err) {
+    console.error("Failed to save recipe:", err);
+    alert("Failed to save recipe. See console for details.");
   } finally {
-    // Re-enable the save button and reset text in case of completion
-    saveBtn.disabled = false;
-    saveBtn.textContent = originalText;
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Recipe";
+    }
   }
 }
