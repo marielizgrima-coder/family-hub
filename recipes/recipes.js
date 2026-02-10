@@ -12,6 +12,10 @@ async function loadRecipes() {
   const recipes = await FirebaseService.getAllRecipesSorted();
   const tags = await FirebaseService.getTags();
 
+  // Remove old filter bar if it exists (prevents duplicates)
+  const existingBar = container.parentElement.querySelector(".filter-bar");
+  if (existingBar) existingBar.remove();
+
   // Filter bar
   const filterBar = document.createElement("div");
   filterBar.className = "filter-bar";
