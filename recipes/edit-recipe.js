@@ -1,5 +1,21 @@
 let editingId = null;
 
+const MEASUREMENT_UNITS = [
+  "",
+  "tsp",
+  "tbsp",
+  "cup",
+  "ml",
+  "l",
+  "g",
+  "kg",
+  "oz",
+  "lb",
+  "pinch",
+  "clove",
+  "piece"
+];
+
 document.addEventListener("DOMContentLoaded", async () => {
   await loadExistingTags();
   checkIfEditing();
@@ -41,14 +57,17 @@ async function addNewTag() {
   addTagPill(tag);
 
   input.value = "";
-  loadExistingTags();
+  await loadExistingTags();
+
+  const select = document.getElementById("existingTags");
+  if (select) select.value = tag;
 }
 
 function addTagPill(tag) {
   const container = document.getElementById("tagContainer");
   if (!container) return;
 
-  if ([...container.children].some(p => p.dataset.tag === tag)) return;
+  if ([...container.children].some(p => p.dataset.tag?.toLowerCase() === tag.toLowerCase())) return;
 
   const pill = document.createElement("span");
   pill.className = "tag-pill";
@@ -71,7 +90,11 @@ function checkIfEditing() {
   const params = new URLSearchParams(window.location.search);
   editingId = params.get("id");
 
-  if (editingId) loadRecipeData(editingId);
+  if (editingId) {
+    loadRecipeData(editingId);
+  } else {
+    addIngredientRow();
+  }
 }
 
 async function loadRecipeData(id) {
@@ -86,12 +109,15 @@ async function loadRecipeData(id) {
     addIngredientRow(i.amount, i.unit, i.name)
   );
 
+  if (!recipe.ingredients || recipe.ingredients.length === 0) {
+    addIngredientRow();
+  }
+
   document.getElementById("cookingTime").value = recipe.cookingTime || "";
   document.getElementById("ovenTemp").value = recipe.ovenTemp || "";
   document.getElementById("servings").value = recipe.servings || "";
   document.getElementById("instructions").value = recipe.instructions || "";
 
-  // Favorite toggle
   const favBtn = document.getElementById("favBtn");
   if (favBtn) {
     favBtn.classList.toggle("active", recipe.isFavorite);
@@ -104,7 +130,6 @@ async function loadRecipeData(id) {
     };
   }
 
-  // Delete button
   const deleteBtn = document.getElementById("deleteBtn");
   if (deleteBtn) {
     deleteBtn.style.display = "";
@@ -124,6 +149,24 @@ async function loadRecipeData(id) {
 
 /* ---------- INGREDIENTS ---------- */
 
+function createMeasurementSelect(value = "") {
+  const select = document.createElement("select");
+  select.className = "ing-unit";
+
+  MEASUREMENT_UNITS.forEach(unit => {
+    const option = document.createElement("option");
+    option.value = unit;
+    option.textContent = unit || "unit";
+    select.appendChild(option);
+  });
+
+  if (MEASUREMENT_UNITS.includes(value)) {
+    select.value = value;
+  }
+
+  return select;
+}
+
 function addIngredientRow(amount = "", unit = "", name = "") {
   const container = document.getElementById("ingredientsContainer");
   if (!container) return;
@@ -135,14 +178,20 @@ function addIngredientRow(amount = "", unit = "", name = "") {
   amountInput.type = "number";
   amountInput.className = "ing-amount";
   amountInput.value = amount === "" ? "" : amount;
+  amountInput.min = "0";
+  amountInput.step = "any";
+  amountInput.placeholder = "Amount";
+  amountInput.addEventListener("input", () => {
+    if (amountInput.value === "") return;
+    if (parseFloat(amountInput.value) < 0) amountInput.value = "0";
+  });
 
-  const unitInput = document.createElement("input");
-  unitInput.className = "ing-unit";
-  unitInput.value = unit || "";
+  const unitInput = createMeasurementSelect(unit || "");
 
   const nameInput = document.createElement("input");
   nameInput.className = "ing-name";
   nameInput.value = name || "";
+  nameInput.placeholder = "Ingredient";
 
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-ingredient";
@@ -167,7 +216,8 @@ function applyMultiplier(multiplier) {
     const val = parseFloat(amountEl.value);
     if (isNaN(val)) return;
 
-    amountEl.value = (val * multiplier).toFixed(2).replace(/\.00$/, "");
+    const next = val * multiplier;
+    amountEl.value = Math.max(0, next).toFixed(2).replace(/\.00$/, "");
   });
 }
 
@@ -193,10 +243,11 @@ async function saveRecipe() {
     const ingredients = [...document.querySelectorAll(".ingredient-row")]
       .map(r => {
         const amountVal = r.querySelector(".ing-amount").value;
-        const amount = amountVal === "" ? "" : parseFloat(amountVal);
+        const parsedAmount = amountVal === "" ? "" : parseFloat(amountVal);
+        const amount = Number.isNaN(parsedAmount) ? "" : Math.max(0, parsedAmount);
 
         return {
-          amount: Number.isNaN(amount) ? "" : amount,
+          amount,
           unit: r.querySelector(".ing-unit").value.trim(),
           name: r.querySelector(".ing-name").value.trim()
         };
@@ -215,15 +266,21 @@ async function saveRecipe() {
       title,
       tags,
       ingredients,
-      cookingTime: Number.isNaN(cookingTime) ? "" : cookingTime,
-      ovenTemp: Number.isNaN(ovenTemp) ? "" : ovenTemp,
+      cookingTime: Number.isNaN(cookingTime) ? "" : Math.max(0, cookingTime),
+      ovenTemp: Number.isNaN(ovenTemp) ? "" : Math.max(0, ovenTemp),
       servings,
       instructions: document.getElementById("instructions").value
     };
 
+    for (const tag of tags) {
+      await FirebaseService.addTag(tag);
+    }
+    await FirebaseService.saveIngredients(ingredients);
+
     if (editingId) {
-      await FirebaseService.updateRecipe(editingId, data);
-      console.log("Recipe updated:", editingId, data);
+      const nextId = await FirebaseService.updateRecipe(editingId, data);
+      editingId = nextId;
+      console.log("Recipe updated:", nextId, data);
     } else {
       const newId = await FirebaseService.addRecipe(data);
       console.log("Recipe added:", newId, data);
