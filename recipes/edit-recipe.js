@@ -33,7 +33,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
    if (!select) return;
  
    select.innerHTML = `<option value="">Select tag</option>`;
-   const tags = await FirebaseService.getTags();
+   const tags = await FirebaseService.tags();
  
    tags.forEach(tag => {
      const opt = document.createElement("option");
