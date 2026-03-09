@@ -29,7 +29,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
  /* ---------- TAGS ---------- */
  
  async function loadExistingTags() {
-   const select = document.getElementById("existingTags");
+   const select = document.getElementById("tags");
    if (!select) return;
  
    select.innerHTML = `<option value="">Select tag</option>`;
@@ -44,7 +44,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
  }
  
  function addExistingTag() {
-   const select = document.getElementById("existingTags");
+   const select = document.getElementById("tags");
    if (!select) return;
  
    if (select.value) addTagPill(select.value);
@@ -65,7 +65,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
 -  loadExistingTags();
 +  await loadExistingTags();
 +
-+  const select = document.getElementById("existingTags");
++  const select = document.getElementById("tags");
 +  if (select) select.value = tag;
  }
  
@@ -106,7 +106,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
  }
  
  async function loadRecipeData(id) {
-   const recipe = await FirebaseService.getRecipe(id);
+   const recipe = await FirebaseService.recipes(id);
    if (!recipe) return;
  
    document.getElementById("pageTitle").textContent = "Edit Recipe";
@@ -130,12 +130,12 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
    const favBtn = document.getElementById("favBtn");
    if (favBtn) {
      favBtn.classList.toggle("active", recipe.isFavorite);
-     favBtn.textContent = recipe.isFavorite ? "⭐" : "☆";
+     favBtn.textContent = recipe.isFavorite ? "★" : "☆";
  
      favBtn.onclick = async () => {
        const newFav = await FirebaseService.toggleFavorite(id);
        favBtn.classList.toggle("active", newFav);
-       favBtn.textContent = newFav ? "⭐" : "☆";
+       favBtn.textContent = newFav ? "★" : "☆";
      };
    }
  
@@ -178,7 +178,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
 +}
 +
  function addIngredientRow(amount = "", unit = "", name = "") {
-   const container = document.getElementById("ingredientsContainer");
+   const container = document.getElementById("ingredients");
    if (!container) return;
  
    const row = document.createElement("div");
