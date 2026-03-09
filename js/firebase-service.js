@@ -5,14 +5,16 @@ index dcc462dcd7c6aad80a08d530208c66b88283c609..98ae18374d21adc8b1e76b53c3967e0c
 @@ -1,78 +1,134 @@
  // firebase-service.js
  
- const firebaseConfig = {
-   apiKey: "AIzaSyXXXXXX",
-   authDomain: "family-hub.firebaseapp.com",
-   projectId: "family-hub",
-   storageBucket: "family-hub.appspot.com",
-   messagingSenderId: "1234567890",
-   appId: "1:1234567890:web:abcdef"
- };
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBH2reigj2qDYUHMTrCZGXzkdkllt3ej_4",
+  authDomain: "family-hub-fd01b.firebaseapp.com",
+  projectId: "family-hub-fd01b",
+  storageBucket: "family-hub-fd01b.firebasestorage.app",
+  messagingSenderId: "472531223034",
+  appId: "1:472531223034:web:27467534bf62de74066443",
+  measurementId: "G-WQZMLG8W8N"
+};;
  
  // Init Firebase ONCE
  if (!firebase.apps.length) {
