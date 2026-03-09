@@ -70,7 +70,7 @@ index f8fb0ffb4e0e82ba88ff0ec275541ebc3215965d..ac809b69a76acca2812b815a3fc2b66b
  }
  
  function addTagPill(tag) {
-   const container = document.getElementById("tagContainer");
+   const container = document.getElementById("tags");
    if (!container) return;
  
 -  if ([...container.children].some(p => p.dataset.tag === tag)) return;
