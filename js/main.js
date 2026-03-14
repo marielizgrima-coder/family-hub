@@ -42,32 +42,47 @@ async function loadMotivation() {
 }
 
 /**
- * 3. FETCH WEATHER FROM OPENWEATHER
- * Gets real-time weather for Żurrieq
+ * 3. FETCH WEATHER FROM Open-Metro
  */
 async function loadWeather() {
     const weatherElem = document.getElementById("weatherInfo");
-    const apiKey = "YOUR_OPENWEATHER_API_KEY"; // <--- PASTE YOUR KEY HERE
+    
+    // Żurrieq coordinates
     const lat = 35.83;
     const lon = 14.47;
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    
+    // Open-Meteo URL (completely free, no key)
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
 
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error("Weather API Error");
-        
         const data = await response.json();
-        const temp = Math.round(data.main.temp);
-        const desc = data.weather[0].description;
         
-        // Capitalize first letter of description
-        const capitalizedDesc = desc.charAt(0).toUpperCase() + desc.slice(1);
+        const temp = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
         
-        weatherElem.innerHTML = `${temp}°C • ${capitalizedDesc} in ${data.name}`;
+        // Convert weather code to a readable word
+        const description = getWeatherDescription(code);
+
+        weatherElem.innerHTML = `${temp}°C • ${description} in Zurrieq`;
     } catch (error) {
         console.error("Weather Error:", error);
         weatherElem.textContent = "Weather currently unavailable.";
     }
+}
+
+// Helper function to turn numbers into words
+function getWeatherDescription(code) {
+    const mapping = {
+        0: "Clear sky",
+        1: "Mainly clear",
+        2: "Partly cloudy",
+        3: "Overcast",
+        45: "Fog",
+        61: "Slight rain",
+        95: "Thunderstorm"
+    };
+    return mapping[code] || "Clear";
 }
 
 // RUN ALL FUNCTIONS ON LOAD
