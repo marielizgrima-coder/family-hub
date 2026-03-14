@@ -6,13 +6,10 @@
     <title>Family Hub</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
-
 <body>
 
-    <!-- Sidebar Toggle -->
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
-    <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
         <h2>Menu</h2>
         <ul>
@@ -25,18 +22,16 @@
         </ul>
     </div>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
-
         <header class="page-header">
             <h1>Family Hub</h1>
         </header>
 
-        <section
+        <section class="dashboard-section">
             <p id="currentDate"></p>
         </section>
         
-         <section class="dashboard-section">
+        <section class="dashboard-section">
             <h2>Quick Links</h2>
             <div class="quick-links">
                 <a class="quick-card" href="recipes/recipes.html">Recipes</a>
@@ -48,38 +43,18 @@
         
         <section class="dashboard-section">
             <h2>Today's Motivation</h2>
-            <p id="motivationText">You’ve got this, Marie. One step at a time.</p>
+            <p id="motivationText">Loading motivation...</p>
         </section>
 
         <section class="dashboard-section">
             <h2>Weather</h2>
             <p id="weatherInfo">Loading weather...</p>
         </section>
-
-        </main>
+    </main>
 
     <script src="js/sidebar.js"></script>
-    <script>
-        // Date
-        const dateElem = document.getElementById("currentDate");
-        const today = new Date();
-        const options = { weekday: "long", day: "numeric", month: "short", year: "numeric" };
-        dateElem.textContent = today.toLocaleDateString("en-GB", options);
-
-        // Motivation (simple for now)
-        const motivations = [
-            "You’re doing amazing.",
-            "Small steps lead to big changes.",
-            "You’ve got this.",
-            "Progress, not perfection.",
-            "One thing at a time."
-        ];
-        document.getElementById("motivationText").textContent =
-            motivations[Math.floor(Math.random() * motivations.length)];
-
-        // Weather placeholder (real API later)
-        document.getElementById("weatherInfo").textContent = "Sunny • 17°C";
-    </script>
+    
+    <script type="module" src="js/main.js"></script>
 
 </body>
 </html>
