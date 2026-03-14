@@ -1,62 +1,76 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+// js/main.js
+import { db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-// 1. Firebase Configuration
-const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    projectId: "YOUR_PROJECT_ID",
-    // ... add the rest of your config from Firebase Console
-};
+/**
+ * 1. SET THE DATE
+ * Displays the date in British format (e.g., Sunday, 15 Mar 2026)
+ */
+function setDate() {
+    const dateElem = document.getElementById("currentDate");
+    if (dateElem) {
+        const today = new Date();
+        const options = { weekday: "long", day: "numeric", month: "short", year: "numeric" };
+        dateElem.textContent = today.toLocaleDateString("en-GB", options);
+    }
+}
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// 2. Date Handler
-const today = new Date();
-document.getElementById("currentDate").textContent = today.toLocaleDateString("en-GB", { 
-    weekday: "long", day: "numeric", month: "short", year: "numeric" 
-});
-
-// 3. Motivation from Firebase
+/**
+ * 2. FETCH MOTIVATION FROM FIREBASE
+ * Looks for a document in the 'motivation' collection named 'YYYY-MM-DD'
+ */
 async function loadMotivation() {
     const motivationElem = document.getElementById("motivationText");
-    const isoDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const today = new Date();
+    // This creates the ID: "2026-03-15"
+    const docId = today.toISOString().split('T')[0]; 
 
     try {
-        const docRef = doc(db, "motivation", isoDate);
+        const docRef = doc(db, "motivation", docId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
             motivationElem.textContent = docSnap.data().text;
         } else {
-            motivationElem.textContent = "You've got this, Marie!";
+            // Default message if no specific quote is set for today
+            motivationElem.textContent = "You’ve got this, Marie. One step at a time.";
         }
     } catch (error) {
         console.error("Firebase Error:", error);
+        motivationElem.textContent = "Make today amazing!";
     }
 }
 
-// 4. Weather from OpenWeather
+/**
+ * 3. FETCH WEATHER FROM OPENWEATHER
+ * Gets real-time weather for Żurrieq
+ */
 async function loadWeather() {
     const weatherElem = document.getElementById("weatherInfo");
-    const apiKey = "YOUR_OPEN_WEATHER_API_KEY";
-    // Using Żurrieq coordinates: lat=35.83, lon=14.47
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=35.83&lon=14.47&units=metric&appid=${apiKey}`;
+    const apiKey = "YOUR_OPENWEATHER_API_KEY"; // <--- PASTE YOUR KEY HERE
+    const lat = 35.83;
+    const lon = 14.47;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
     try {
         const response = await fetch(url);
-        const data = await response.json();
+        if (!response.ok) throw new Error("Weather API Error");
         
+        const data = await response.json();
         const temp = Math.round(data.main.temp);
         const desc = data.weather[0].description;
-        const city = data.name;
-
-        weatherElem.innerHTML = `${temp}°C • ${desc.charAt(0).toUpperCase() + desc.slice(1)} in ${city}`;
+        
+        // Capitalize first letter of description
+        const capitalizedDesc = desc.charAt(0).toUpperCase() + desc.slice(1);
+        
+        weatherElem.innerHTML = `${temp}°C • ${capitalizedDesc} in ${data.name}`;
     } catch (error) {
+        console.error("Weather Error:", error);
         weatherElem.textContent = "Weather currently unavailable.";
     }
 }
 
-// Initialize Everything
+// RUN ALL FUNCTIONS ON LOAD
+setDate();
 loadMotivation();
 loadWeather();
