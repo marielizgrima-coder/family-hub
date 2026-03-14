@@ -1,7 +1,8 @@
+// js/main.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-// 1. Firebase Config
+// 1. Firebase Config (Only one initialization allowed)
 const firebaseConfig = {
     apiKey: "AIzaSyBH2reigj2qDYUHMTrCZGXzkdkllt3ej_4",
     authDomain: "family-hub-fd01b.firebaseapp.com",
@@ -14,26 +15,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Helper function to turn Open-Meteo numbers into words
+// Weather condition helper
 function getWeatherDescription(code) {
-    const description = {
-        0: "Clear Sky",
-        1: "Mainly Clear",
-        2: "Partly Cloudy",
-        3: "Overcast",
-        45: "Foggy",
-        61: "Slight Rain",
-        80: "Rain Showers",
-        95: "Thunderstorm"
+    const mapping = {
+        0: "Clear Sky", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
+        45: "Foggy", 61: "Slight Rain", 80: "Rain Showers", 95: "Thunderstorm"
     };
-    return description[code] || "Clear";
+    return mapping[code] || "Clear";
 }
 
-// 2. Main Dashboard Function
 async function initDashboard() {
     const today = new Date();
     
-    // --- DATE ---
+    // --- 1. SET THE DATE ---
     const dateElem = document.getElementById("currentDate");
     if (dateElem) {
         dateElem.textContent = today.toLocaleDateString("en-GB", { 
@@ -41,10 +35,9 @@ async function initDashboard() {
         });
     }
 
-    // --- MOTIVATION ---
+    // --- 2. GET MOTIVATION FROM FIREBASE ---
     const motivationElem = document.getElementById("motivationText");
-    // This will correctly generate "2026-03-15" to match your document
-    const docId = today.toISOString().split('T')[0]; 
+    const docId = today.toISOString().split('T')[0]; // Creates "2026-03-15"
 
     try {
         const docRef = doc(db, "motivation", docId);
@@ -52,14 +45,15 @@ async function initDashboard() {
         if (docSnap.exists()) {
             motivationElem.textContent = docSnap.data().text;
         } else {
-            motivationElem.textContent = "You've got this, Marie!";
+            // Fallback if the document name in Firebase isn't exactly "2026-03-15"
+            motivationElem.textContent = "You've got this, Marie! Today is a new day.";
         }
     } catch (e) {
         console.error("Firebase Error:", e);
-        motivationElem.textContent = "Believe in yourself today.";
+        motivationElem.textContent = "Make it a great day!";
     }
 
-    // --- WEATHER ---
+    // --- 3. GET WEATHER (FREE) ---
     const weatherElem = document.getElementById("weatherInfo");
     try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=35.83&longitude=14.47&current_weather=true");
@@ -70,9 +64,9 @@ async function initDashboard() {
         weatherElem.innerHTML = `${temp}°C • ${condition} in Zurrieq`;
     } catch (e) {
         console.error("Weather Error:", e);
-        weatherElem.textContent = "Weather unavailable.";
+        weatherElem.textContent = "Weather currently unavailable.";
     }
 }
 
-// Start the app
+// Run the function
 initDashboard();
