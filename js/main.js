@@ -50,15 +50,18 @@ async function initDashboard() {
     }
 
     // --- WEATHER (FREE - NO KEY NEEDED) ---
+    async function loadWeather() {
     const weatherElem = document.getElementById("weatherInfo");
+    // No key needed for Open-Meteo!
     try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=35.83&longitude=14.47&current_weather=true`);
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=35.83&longitude=14.47&current_weather=true");
         const data = await res.json();
         const temp = Math.round(data.current_weather.temperature);
-        weatherElem.innerHTML = `${temp}°C • Live Weather in Zurrieq`;
+        weatherElem.innerHTML = `${temp}°C • Sunny in Zurrieq`;
     } catch (e) {
-        console.error("Weather Error:", e);
-        weatherElem.textContent = "Weather currently unavailable.";
+        weatherElem.textContent = "Weather unavailable.";
+    }
+}
     }
 }
 
