@@ -1,34 +1,62 @@
-import { db } from './firebase-config.js'; // Your initialized Firebase file
-import { doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-// 1. Get Today's Date for Display (UK Format)
-const dateElem = document.getElementById("currentDate");
+// 1. Firebase Configuration
+const firebaseConfig = {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    projectId: "YOUR_PROJECT_ID",
+    // ... add the rest of your config from Firebase Console
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 2. Date Handler
 const today = new Date();
-dateElem.textContent = today.toLocaleDateString("en-GB", { 
+document.getElementById("currentDate").textContent = today.toLocaleDateString("en-GB", { 
     weekday: "long", day: "numeric", month: "short", year: "numeric" 
 });
 
-// 2. Fetch Motivation from Firestore
+// 3. Motivation from Firebase
 async function loadMotivation() {
-    const isoDate = today.toISOString().split('T')[0]; // Gets "2026-03-14"
-    const docRef = doc(db, "motivation", isoDate);
-    const docSnap = await getDoc(docRef);
+    const motivationElem = document.getElementById("motivationText");
+    const isoDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
-    if (docSnap.exists()) {
-        document.getElementById("motivationText").innerText = docSnap.data().text;
+    try {
+        const docRef = doc(db, "motivation", isoDate);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            motivationElem.textContent = docSnap.data().text;
+        } else {
+            motivationElem.textContent = "You've got this, Marie!";
+        }
+    } catch (error) {
+        console.error("Firebase Error:", error);
     }
 }
 
-// 3. Fetch Weather (Example using OpenWeather)
+// 4. Weather from OpenWeather
 async function loadWeather() {
-    const apiKey = "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={API key}";
-    const city = "Zurrieq"; 
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
-    const data = await response.json();
-    
-    document.getElementById("weatherInfo").innerText = 
-        `${Math.round(data.main.temp)}°C - ${data.weather[0].main} in ${data.name}`;
+    const weatherElem = document.getElementById("weatherInfo");
+    const apiKey = "YOUR_OPEN_WEATHER_API_KEY";
+    // Using Żurrieq coordinates: lat=35.83, lon=14.47
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=35.83&lon=14.47&units=metric&appid=${apiKey}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        const temp = Math.round(data.main.temp);
+        const desc = data.weather[0].description;
+        const city = data.name;
+
+        weatherElem.innerHTML = `${temp}°C • ${desc.charAt(0).toUpperCase() + desc.slice(1)} in ${city}`;
+    } catch (error) {
+        weatherElem.textContent = "Weather currently unavailable.";
+    }
 }
 
+// Initialize Everything
 loadMotivation();
 loadWeather();
