@@ -21,7 +21,7 @@ async function loadMotivation() {
 
 // 3. Fetch Weather (Example using OpenWeather)
 async function loadWeather() {
-    const apiKey = "YOUR_WEATHER_API_KEY";
+    const apiKey = "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={API key}";
     const city = "Zurrieq"; 
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
     const data = await response.json();
