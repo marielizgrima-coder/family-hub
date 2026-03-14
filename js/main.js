@@ -14,7 +14,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 2. Run immediately on load
+// Helper function to turn Open-Meteo numbers into words
+function getWeatherDescription(code) {
+    const description = {
+        0: "Clear Sky",
+        1: "Mainly Clear",
+        2: "Partly Cloudy",
+        3: "Overcast",
+        45: "Foggy",
+        61: "Slight Rain",
+        80: "Rain Showers",
+        95: "Thunderstorm"
+    };
+    return description[code] || "Clear";
+}
+
+// 2. Main Dashboard Function
 async function initDashboard() {
     const today = new Date();
     
@@ -28,7 +43,8 @@ async function initDashboard() {
 
     // --- MOTIVATION ---
     const motivationElem = document.getElementById("motivationText");
-    const docId = today.toISOString().split('T')[0]; // "2026-03-15"
+    // This will correctly generate "2026-03-15" to match your document
+    const docId = today.toISOString().split('T')[0]; 
 
     try {
         const docRef = doc(db, "motivation", docId);
@@ -43,20 +59,20 @@ async function initDashboard() {
         motivationElem.textContent = "Believe in yourself today.";
     }
 
-    // --- WEATHER (FREE - NO KEY NEEDED) ---
-    async function loadWeather() {
+    // --- WEATHER ---
     const weatherElem = document.getElementById("weatherInfo");
-    // No key needed for Open-Meteo!
     try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=35.83&longitude=14.47&current_weather=true");
         const data = await res.json();
         const temp = Math.round(data.current_weather.temperature);
-        weatherElem.innerHTML = `${temp}°C • Sunny in Zurrieq`;
+        const condition = getWeatherDescription(data.current_weather.weathercode);
+        
+        weatherElem.innerHTML = `${temp}°C • ${condition} in Zurrieq`;
     } catch (e) {
+        console.error("Weather Error:", e);
         weatherElem.textContent = "Weather unavailable.";
     }
 }
-    }
-}
 
+// Start the app
 initDashboard();
